@@ -6,4 +6,4 @@ __pycache__/
 myvenv/
 
 # Ignore database config file
-.ini
+database.ini
