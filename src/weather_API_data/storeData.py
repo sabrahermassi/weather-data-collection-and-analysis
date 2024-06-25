@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 import sys
 sys.path.append('../')
-from src.weather_API_data.createTable import load_config, create_weather_table
+from createTable import load_config, create_weather_table
 
 
 
