@@ -1,10 +1,12 @@
+""" Module providing Unit Tests for database storage. """
+
+import sys
 import unittest
 import psycopg2
 import testing.postgresql
 from sqlalchemy import create_engine
-import sys
 sys.path.append('../')
-from src.weather_API_data.storeData import insert_data
+from weather_api_data.store_data import insert_data
 
 
 
@@ -32,8 +34,9 @@ response_dict =    {
          "temperature": 24,
          "weather_code": 113,
          "weather_icons": [
-            "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
-         ],
+         """https://cdn.worldweatheronline.com/images/
+            wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"""
+            ],
          "weather_descriptions": [
             "Clear"
          ],
@@ -53,6 +56,7 @@ response_dict =    {
 
 
 class MyTestCase(unittest.TestCase):
+    """Tests for database."""
     @classmethod
     def setUpClass(self):
         self.postgresql = testing.postgresql.Postgresql()
@@ -64,7 +68,7 @@ class MyTestCase(unittest.TestCase):
                 print('Successfully connected to the PostgreSQL database')
         except Exception as ex:
             print(f'Sorry failed to connect: {ex}')
-        
+
         """ Create weather_data table in the PostgreSQL database"""
         command = """CREATE TABLE weather_data (
                         id SERIAL PRIMARY KEY,
@@ -75,17 +79,18 @@ class MyTestCase(unittest.TestCase):
                         date_time TIMESTAMP
                 )"""
         try:
-           self.db.cursor.execute(command)
+            self.db.cursor.execute(command)
         except (psycopg2.DatabaseError, Exception) as error:
             print(error)
 
     def tearDown(self):
         self.postgresql.stop()
 
-    def test_store_data_into_Db(self):
+    def test_store_data_into_db(self):
         insert_data(self.db, "Seoul", response_dict)
 
 
 
-if __name__ == "__main__":
+
+if __name__=='__main__':
     unittest.main()

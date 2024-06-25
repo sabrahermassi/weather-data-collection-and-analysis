@@ -1,10 +1,11 @@
-"""Module that tests the weather api."""
-import pytest
+""" Module providing Unit Tests for weather data fetching. """
+
+import sys
 import json
 from http import HTTPStatus
-import sys
+import pytest
 sys.path.append('../')
-from src.weather_API_data.storeData import fetch_weather_data
+from weather_api_data.store_data import fetch_weather_data
 
 
 

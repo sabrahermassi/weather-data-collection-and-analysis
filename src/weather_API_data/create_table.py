@@ -1,5 +1,8 @@
-import psycopg2
+""" Module providing functions that load a config file
+    and create a weather_table in postgres database. """
+
 from configparser import ConfigParser
+import psycopg2
 
 
 
@@ -15,10 +18,10 @@ def load_config(filename='database.ini', section='postgresql'):
         params = parser.items(section)
         for param in params:
             config[param[0]] = param[1]
-    else:
-        raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+            return config
 
-    return config
+    else:
+        raise ValueError(f'Section {0} not found in the {1} file'.format(section, filename))
 
 
 
@@ -45,3 +48,4 @@ def create_weather_table(config):
 
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
+        return
