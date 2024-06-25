@@ -1,7 +1,9 @@
 import psycopg2
 import requests
 from datetime import datetime
-from createTable import load_config, create_weather_table
+import sys
+sys.path.append('../')
+from src.weather_API_data.createTable import load_config, create_weather_table
 
 
 
@@ -14,16 +16,23 @@ cities = ["Seoul", "pusan", "Malmö", "Stockholm", "Paris", "Taipei", "London"]
 
 
 
-def insert_data(conn, city_name, temp, pressure, humidity):
+def insert_data(conn, city_name, response_dict):
     """ Inset data in the weather_data table """
-    command = """INSERT INTO weather_data (city_name, temp, pressure, humidity, date_time)
+    command = """INSERT INTO weather_data (city_name, temperature, pressure, humidity, date_time)
                     VALUES (%s, %s, %s, %s, %s);"""
+    
+    if 'current' not in response_dict:
+        raise Exception(f"Error fetching data for {city}: 'current' key not found in response")
+    else:
+        temperature = response_dict['current']['temperature']
+        pressure = response_dict['current']['pressure']
+        humidity = response_dict['current']['humidity']
 
     try:
         with conn.cursor() as cur:
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-            val = (city_name, temp, pressure, humidity, date_time)
+            val = (city_name, temperature, pressure, humidity, date_time)
             cur.execute(command, val)
             print(cur.rowcount, "record inserted.")
 
@@ -33,20 +42,17 @@ def insert_data(conn, city_name, temp, pressure, humidity):
 
 
 
-def fetch_insert_weather_data(conn):
-    """ Fetch weather data from the API and call insert method """
-    for city in cities:
-        url = f"{api_base_url}?access_key={api_key}&query={city}"
+def fetch_weather_data(city):
+    """ Fetch weather data from the API  """
+    url = f"{api_base_url}?access_key={api_key}&query={city}"
+
+    try: 
         response = requests.get(url)
         response_dict = response.json()
-        if 'current' not in response_dict:
-            print(f"Error fetching data for {city}: 'current' key not found in response")
-            continue
+        return response_dict
 
-        temperature = response_dict['current']['temperature']
-        pressure = response_dict['current']['pressure']
-        humidity = response_dict['current']['humidity']
-        insert_data(conn, city, temperature, pressure, humidity)
+    except (requests.ConnectionError , Exception) as error:
+        print(error)
 
 
 
@@ -54,4 +60,7 @@ def fetch_insert_weather_data(conn):
 if __name__=='__main__':
     config = load_config()
     conn = create_weather_table(config)
-    fetch_insert_weather_data(conn)
+
+    for city in cities:
+        response_dict = fetch_weather_data(city)
+        insert_data(conn, city, response_dict)

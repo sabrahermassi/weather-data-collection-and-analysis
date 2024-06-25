@@ -1,0 +1,297 @@
+{
+    "request":{
+       "type":"City",
+       "query":"Seoul, South Korea",
+       "language":"en",
+       "unit":"m"
+    },
+    "location":{
+       "name":"Seoul",
+       "country":"South Korea",
+       "region":"",
+       "lat":"37.566",
+       "lon":"127.000",
+       "timezone_id":"Asia/Seoul",
+       "localtime":"2024-06-22 03:43",
+       "localtime_epoch":1719027780,
+       "utc_offset":"9.0"
+    },
+    "current":{
+       "observation_time":"06:43 PM",
+       "temperature":24,
+       "weather_code":113,
+       "weather_icons":[
+          "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
+       ],
+       "weather_descriptions":[
+          "Clear"
+       ],
+       "wind_speed":7,
+       "wind_degree":160,
+       "wind_dir":"SSE",
+       "pressure":1001,
+       "precip":0,
+       "humidity":74,
+       "cloudcover":0,
+       "feelslike":25,
+       "uv_index":1,
+       "visibility":10,
+       "is_day":"no"
+    }
+ }
+
+ {
+    "request":{
+       "type":"City",
+       "query":"Pusan, South Korea",
+       "language":"en",
+       "unit":"m"
+    },
+    "location":{
+       "name":"Pusan",
+       "country":"South Korea",
+       "region":"",
+       "lat":"35.700",
+       "lon":"128.033",
+       "timezone_id":"Asia/Seoul",
+       "localtime":"2024-06-22 03:44",
+       "localtime_epoch":1719027840,
+       "utc_offset":"9.0"
+    },
+    "current":{
+       "observation_time":"06:44 PM",
+       "temperature":24,
+       "weather_code":113,
+       "weather_icons":[
+          "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
+       ],
+       "weather_descriptions":[
+          "Clear"
+       ],
+       "wind_speed":6,
+       "wind_degree":130,
+       "wind_dir":"SE",
+       "pressure":1003,
+       "precip":0,
+       "humidity":78,
+       "cloudcover":0,
+       "feelslike":27,
+       "uv_index":1,
+       "visibility":10,
+       "is_day":"no"
+    }
+ }
+
+ {
+    "request":{
+       "type":"City",
+       "query":"Malmö, Suède",
+       "language":"en",
+       "unit":"m"
+    },
+    "location":{
+       "name":"Malmö",
+       "country":"Suède",
+       "region":"Skane Lan",
+       "lat":"55.600",
+       "lon":"13.000",
+       "timezone_id":"Europe/Stockholm",
+       "localtime":"2024-06-21 20:43",
+       "localtime_epoch":1719002580,
+       "utc_offset":"2.0"
+    },
+    "current":{
+       "observation_time":"06:43 PM",
+       "temperature":19,
+       "weather_code":122,
+       "weather_icons":[
+          "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+       ],
+       "weather_descriptions":[
+          "Overcast"
+       ],
+       "wind_speed":9,
+       "wind_degree":90,
+       "wind_dir":"E",
+       "pressure":1011,
+       "precip":0,
+       "humidity":60,
+       "cloudcover":100,
+       "feelslike":19,
+       "uv_index":4,
+       "visibility":10,
+       "is_day":"yes"
+    }
+ }
+
+
+{
+   "request":{
+      "type":"City",
+      "query":"Stockholm, Sweden",
+      "language":"en",
+      "unit":"m"
+   },
+   "location":{
+      "name":"Stockholm",
+      "country":"Sweden",
+      "region":"Stockholms Lan",
+      "lat":"59.333",
+      "lon":"18.050",
+      "timezone_id":"Europe/Stockholm",
+      "localtime":"2024-06-21 20:43",
+      "localtime_epoch":1719002580,
+      "utc_offset":"2.0"
+   },
+   "current":{
+      "observation_time":"06:43 PM",
+      "temperature":18,
+      "weather_code":113,
+      "weather_icons":[
+         "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+      ],
+      "weather_descriptions":[
+         "Sunny"
+      ],
+      "wind_speed":11,
+      "wind_degree":160,
+      "wind_dir":"SSE",
+      "pressure":1013,
+      "precip":0,
+      "humidity":52,
+      "cloudcover":0,
+      "feelslike":18,
+      "uv_index":4,
+      "visibility":10,
+      "is_day":"yes"
+   }
+}
+
+
+{
+    "request":{
+       "type":"City",
+       "query":"Paris, France",
+       "language":"en",
+       "unit":"m"
+    },
+    "location":{
+       "name":"Paris",
+       "country":"France",
+       "region":"Ile-de-France",
+       "lat":"48.867",
+       "lon":"2.333",
+       "timezone_id":"Europe/Paris",
+       "localtime":"2024-06-21 20:43",
+       "localtime_epoch":1719002580,
+       "utc_offset":"2.0"
+    },
+    "current":{
+       "observation_time":"06:43 PM",
+       "temperature":22,
+       "weather_code":116,
+       "weather_icons":[
+          "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0002_sunny_intervals.png"
+       ],
+       "weather_descriptions":[
+          "Partly cloudy"
+       ],
+       "wind_speed":13,
+       "wind_degree":180,
+       "wind_dir":"S",
+       "pressure":1014,
+       "precip":0.2,
+       "humidity":65,
+       "cloudcover":25,
+       "feelslike":25,
+       "uv_index":4,
+       "visibility":10,
+       "is_day":"yes"
+    }
+ }
+
+
+{
+   "request":{
+      "type":"City",
+      "query":"Taipei, Taiwan",
+      "language":"en",
+      "unit":"m"
+   },
+   "location":{
+      "name":"Taipei",
+      "country":"Taiwan",
+      "region":"T'ai-pei",
+      "lat":"25.039",
+      "lon":"121.525",
+      "timezone_id":"Asia/Taipei",
+      "localtime":"2024-06-22 02:43",
+      "localtime_epoch":1719024180,
+      "utc_offset":"8.0"
+   },
+   "current":{
+      "observation_time":"06:43 PM",
+      "temperature":28,
+      "weather_code":116,
+      "weather_icons":[
+         "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+      ],
+      "weather_descriptions":[
+         "Partly cloudy"
+      ],
+      "wind_speed":4,
+      "wind_degree":330,
+      "wind_dir":"NNW",
+      "pressure":1006,
+      "precip":0,
+      "humidity":89,
+      "cloudcover":25,
+      "feelslike":34,
+      "uv_index":1,
+      "visibility":10,
+      "is_day":"no"
+   }
+}
+
+
+{
+    "request":{
+       "type":"City",
+       "query":"London, United Kingdom",
+       "language":"en",
+       "unit":"m"
+    },
+    "location":{
+       "name":"London",
+       "country":"United Kingdom",
+       "region":"City of London, Greater London",
+       "lat":"51.517",
+       "lon":"-0.106",
+       "timezone_id":"Europe/London",
+       "localtime":"2024-06-21 19:43",
+       "localtime_epoch":1718998980,
+       "utc_offset":"1.0"
+    },
+    "current":{
+       "observation_time":"06:43 PM",
+       "temperature":17,
+       "weather_code":113,
+       "weather_icons":[
+          "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0001_sunny.png"
+       ],
+       "weather_descriptions":[
+          "Sunny"
+       ],
+       "wind_speed":28,
+       "wind_degree":210,
+       "wind_dir":"SSW",
+       "pressure":1012,
+       "precip":0,
+       "humidity":59,
+       "cloudcover":0,
+       "feelslike":17,
+       "uv_index":5,
+       "visibility":10,
+       "is_day":"yes"
+    }
+ }
