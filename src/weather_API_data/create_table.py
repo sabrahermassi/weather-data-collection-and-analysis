@@ -3,6 +3,9 @@
 
 from configparser import ConfigParser
 import psycopg2
+from dotenv import load_dotenv
+from pathlib import Path
+import os
 
 
 
@@ -18,10 +21,21 @@ def load_config(filename='database.ini', section='postgresql'):
         params = parser.items(section)
         for param in params:
             config[param[0]] = param[1]
-            return config
+        return config
 
     else:
-        raise ValueError(f'Section {0} not found in the {1} file'.format(section, filename))
+        raise ValueError(f"Section {section} not found in the {filename} file")
+
+
+
+
+def env_config_loading():
+    """ Fetch configuration from .env file """
+    env_path = Path('.') / '.env'
+    load_dotenv(dotenv_path=env_path)
+    api_key = os.getenv('API_KEY')
+    api_base_url = os.getenv('API_BASE_URL')
+    return api_key, api_base_url
 
 
 
@@ -36,7 +50,7 @@ def create_weather_table(config):
                     humidity INT,
                     date_time TIMESTAMP
                )"""
-
+    
     try:
         with psycopg2.connect(**config) as conn:
             print("Successfully connected to the postgres server")

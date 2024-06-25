@@ -2,22 +2,21 @@
     and store it in postgres database. """
 
 from datetime import datetime
-import sys
 import psycopg2
 import requests
-sys.path.append('../')
-from weather_api_data.create_table import load_config, create_weather_table
+from dotenv import load_dotenv
+from pathlib import Path
+from ratelimit import limits, sleep_and_retry
+from retrying import retry
+import os
+
+from .create_table import load_config, env_config_loading, create_weather_table
 
 
 
 
-# Set up the API parameters
-API_KEY = "325de9e270755c796bfe89791f69f365"
-API_BASE_URL = "http://api.weatherstack.com/current"
 CITIES = ["Seoul", "pusan", "Malmö", "Stockholm", "Paris", "Taipei", "London"]
-
-
-
+ONE_MINUTE = 60
 
 def insert_data(conn, city_name, response_dict):
     """ Inset data in the weather_data table """
@@ -46,14 +45,16 @@ def insert_data(conn, city_name, response_dict):
 
 
 
-def fetch_weather_data(city):
+@sleep_and_retry
+@limits(calls=60, period=ONE_MINUTE)
+@retry(stop_max_attempt_number=3, wait_fixed=2000)
+def fetch_weather_data(city, api_key, api_base_url):
     """ Fetch weather data from the API  """
-    url = f"{API_BASE_URL}?access_key={API_KEY}&query={city}"
+    url = f"{api_base_url}?access_key={api_key}&query={city}"
 
     try:
         response = requests.get(url, timeout=10)
-        response_dict = response.json()
-        return response_dict
+        return response.json()
 
     except (requests.ConnectionError , Exception) as error:
         print(error)
@@ -65,7 +66,8 @@ def fetch_weather_data(city):
 if __name__=='__main__':
     config = load_config()
     connection = create_weather_table(config)
+    api_key, api_base_url = env_config_loading()
 
     for city_nm in CITIES:
-        response_data = fetch_weather_data(city_nm)
+        response_data = fetch_weather_data(city_nm, api_key, api_base_url)
         insert_data(connection, city_nm, response_data)
