@@ -6,7 +6,7 @@ import psycopg2
 import testing.postgresql
 from sqlalchemy import create_engine
 sys.path.append('../')
-from weather_api_data.store_data import insert_data
+from src.weather_api_data.store_data import insert_data
 
 
 

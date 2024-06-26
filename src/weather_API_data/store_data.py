@@ -37,9 +37,11 @@ def insert_data(conn, city_name, response_dict):
             val = (city_name, temperature, pressure, humidity, date_time)
             cur.execute(command, val)
             print(cur.rowcount, "record inserted.")
+            return cur.rowcount
 
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
+        return
 
 
 
