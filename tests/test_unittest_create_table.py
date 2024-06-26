@@ -57,7 +57,7 @@ class TestCreateTable(unittest.TestCase):
         mock_conn.cursor.assert_called()
         mock_cur.execute.assert_any_call("DROP TABLE  IF EXISTS weather_data")
         mock_cur.execute.assert_any_call(unittest.mock.ANY)
-        assert result == mock_conn
+        self.assertEqual(result, mock_conn)
     
     @patch('psycopg2.connect')
     def test_create_weather_table_error(self, mock_connect):
@@ -72,7 +72,7 @@ class TestCreateTable(unittest.TestCase):
         result = create_weather_table(config)
 
         mock_connect.assert_called_once_with(**config)
-        assert result is None
+        self.assertEqual(result, None)
 
 
 

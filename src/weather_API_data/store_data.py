@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 from ratelimit import limits, sleep_and_retry
 from retrying import retry
-import os
 
 from .create_table import load_config, env_config_loading, create_weather_table
 
