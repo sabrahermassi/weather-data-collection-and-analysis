@@ -2,10 +2,17 @@
     and create a weather_table in postgres database. """
 
 from configparser import ConfigParser
-import psycopg2
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import requests
+from ratelimit import limits, sleep_and_retry
+from retrying import retry
+
+
+
+
+ONE_MINUTE = 60
 
 
 
@@ -40,26 +47,17 @@ def env_config_loading():
 
 
 
-def create_weather_table(config):
-    """ Create weather_data table in the PostgreSQL database"""
-    command = """CREATE TABLE weather_data (
-                    id SERIAL PRIMARY KEY,
-                    city_name VARCHAR(255),
-                    temp FLOAT,
-                    pressure INT,
-                    humidity INT,
-                    date_time TIMESTAMP
-               )"""
-    
-    try:
-        with psycopg2.connect(**config) as conn:
-            print("Successfully connected to the postgres server")
-            # Create a table in the database
-            with conn.cursor() as cur:
-                cur.execute("DROP TABLE  IF EXISTS weather_data")
-                cur.execute(command)
-            return conn
+@sleep_and_retry
+@limits(calls=60, period=ONE_MINUTE)
+@retry(stop_max_attempt_number=3, wait_fixed=2000)
+def fetch_weather_data(city, api_key, api_base_url):
+    """ Fetch weather data from the API  """
+    url = f"{api_base_url}?access_key={api_key}&query={city}"
 
-    except (psycopg2.DatabaseError, Exception) as error:
+    try:
+        response = requests.get(url, timeout=10)
+        return response.json()
+
+    except (requests.ConnectionError , Exception) as error:
         print(error)
         return

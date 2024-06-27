@@ -16,12 +16,10 @@ setuptools.setup(
     install_requires=[
         'psycopg2',
         'requests',
-        'Path',
         'ConfigParser',
         'retry',
         'limits',
         'sleep_and_retry',
-        'load_dotenv',
         'os',
         'datetime'
     ],

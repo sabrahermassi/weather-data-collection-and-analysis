@@ -1,12 +1,14 @@
-""" Module providing Unit Tests for load_config, env_config_loading
-    and create_weather_table methods in create_table.py file. """
+""" Module providing Unit Tests for load_config, and
+    fetch_weather_data methods in create_table.py file. """
 
 import sys
 import unittest
-import psycopg2
+import json
+from http import HTTPStatus
+import os
 from unittest.mock import MagicMock, patch
 sys.path.append('../')
-from src.weather_api_data.create_table import load_config, env_config_loading, create_weather_table
+from src.weather_api_data.create_table import load_config, fetch_weather_data
 
 
 
@@ -34,45 +36,45 @@ class TestLoadConfig(unittest.TestCase):
 
 
 
-class TestCreateTable(unittest.TestCase):
-    """Tests for creating the weather_data table in the database."""
-
-    @patch('psycopg2.connect')
-    def test_create_weather_table_success(self, mock_connect):
-        mock_conn = MagicMock()
-        mock_cur = MagicMock()
-
-        mock_connect.return_value.__enter__.return_value = mock_conn
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cur
-
-        config = {
-            'host': 'localhost',
-            'database': 'test_db',
-            'user': 'test_user',
-            'password': 'test_password',
-        }
-        result = create_weather_table(config)
-
-        mock_connect.assert_called_once_with(**config)
-        mock_conn.cursor.assert_called()
-        mock_cur.execute.assert_any_call("DROP TABLE  IF EXISTS weather_data")
-        mock_cur.execute.assert_any_call(unittest.mock.ANY)
-        self.assertEqual(result, mock_conn)
+class TestFetchWeatherData(unittest.TestCase):
+    """ Tests for fetching weather data from the weather API """
+    @classmethod
+    def setUpClass(self):
+        file_path = os.path.join(os.path.dirname(__file__), "resources", "weather.json")
+        with open(file_path) as f:
+            file_content = json.load(f)
+            self.json_object_success = file_content[0]
+            self.json_object_104 = file_content[1]
+            self.fake_api_key = "1234567890qwertyuiop"
+            self.fake_api_base_url = "http://api.fakeweatherapi.com"
+            self.city = "Seoul"
     
-    @patch('psycopg2.connect')
-    def test_create_weather_table_error(self, mock_connect):
-        mock_connect.side_effect = psycopg2.DatabaseError("Connection error")
+    @patch('requests.get')
+    def test_fetch_weather_data_success(self, mocker_get):
+        """Given a city name, test that a HTML report about the weather is generated
+        correctly."""
+        # Creates a fake requests response object
+        fake_resp = MagicMock()
+        fake_resp.json.return_value = self.json_object_success
+        fake_resp.status_code = HTTPStatus.OK
+        mocker_get.return_value = fake_resp
 
-        config = {
-            'host': 'localhost',
-            'database': 'test_db',
-            'user': 'test_user',
-            'password': 'test_password',
-        }
-        result = create_weather_table(config)
+        weather_info = fetch_weather_data(self.city, self.fake_api_key, self.fake_api_base_url)
+        mocker_get.assert_called()
+        self.assertEqual(weather_info, self.json_object_success)
+    
+    @patch('requests.get')
+    def test_fetch_weather_data_failure(self, mocker_get):
+        """Test that your monthly usage limit has been reached."""
+        # Creates a fake requests response object
+        fake_resp = MagicMock()
+        fake_resp.json.return_value = self.json_object_104
+        fake_resp.status_code = 104
+        mocker_get.return_value = fake_resp
 
-        mock_connect.assert_called_once_with(**config)
-        self.assertEqual(result, None)
+        weather_info = fetch_weather_data(self.city, self.fake_api_key, self.fake_api_base_url)
+        mocker_get.assert_called()
+        self.assertEqual(weather_info, self.json_object_104)
 
 
 

@@ -3,19 +3,44 @@
 
 from datetime import datetime
 import psycopg2
-import requests
-from dotenv import load_dotenv
-from pathlib import Path
-from ratelimit import limits, sleep_and_retry
-from retrying import retry
-
-from .create_table import load_config, env_config_loading, create_weather_table
+import sys
+sys.path.append('./')
+from src.weather_api_data.create_table import load_config, env_config_loading, fetch_weather_data
 
 
 
 
 CITIES = ["Seoul", "pusan", "Malmö", "Stockholm", "Paris", "Taipei", "London"]
-ONE_MINUTE = 60
+
+
+
+
+def create_weather_table(config):
+    """ Create weather_data table in the PostgreSQL database"""
+    command = """CREATE TABLE weather_data (
+                    id SERIAL PRIMARY KEY,
+                    city_name VARCHAR(255),
+                    temp FLOAT,
+                    pressure INT,
+                    humidity INT,
+                    date_time TIMESTAMP
+               )"""
+    
+    try:
+        with psycopg2.connect(**config) as conn:
+            print("Successfully connected to the postgres server")
+            # Create a table in the database
+            with conn.cursor() as cur:
+                cur.execute("DROP TABLE  IF EXISTS weather_data")
+                cur.execute(command)
+            return conn
+
+    except (psycopg2.DatabaseError, Exception) as error:
+        print(error)
+        return
+
+
+
 
 def insert_data(conn, city_name, response_dict):
     """ Inset data in the weather_data table """
@@ -40,24 +65,6 @@ def insert_data(conn, city_name, response_dict):
             return cur.rowcount
 
     except (psycopg2.DatabaseError, Exception) as error:
-        print(error)
-        return
-
-
-
-
-@sleep_and_retry
-@limits(calls=60, period=ONE_MINUTE)
-@retry(stop_max_attempt_number=3, wait_fixed=2000)
-def fetch_weather_data(city, api_key, api_base_url):
-    """ Fetch weather data from the API  """
-    url = f"{api_base_url}?access_key={api_key}&query={city}"
-
-    try:
-        response = requests.get(url, timeout=10)
-        return response.json()
-
-    except (requests.ConnectionError , Exception) as error:
         print(error)
         return
 
