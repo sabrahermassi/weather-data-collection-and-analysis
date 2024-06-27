@@ -9,7 +9,67 @@ import unittest
 from unittest.mock import MagicMock, patch
 import unittest.mock
 sys.path.append('../')
-from src.weather_api_data.store_data import create_weather_table, insert_data 
+from src.weather_api_data.store_data import create_weather_database, create_weather_table, insert_data 
+
+
+
+
+class TestCreateDatabase(unittest.TestCase):
+    """Tests for creating the weather_data database."""
+
+    @patch('psycopg2.connect')
+    def test_create_weather_database_success(self, mock_connect):
+        mock_conn = MagicMock()
+        mock_cur = MagicMock()
+        mock_connect.return_value = mock_conn
+        mock_conn.cursor.return_value = mock_cur
+
+        config_main = {
+            'host': 'localhost',
+            'database': 'test_db_main',
+            'user': 'test_user_main',
+            'password': 'test_password_main',
+        }
+
+        config_new = {
+            'host': 'localhost',
+            'database': 'test_db_new',
+            'user': 'test_user_new',
+            'password': 'test_password_new',
+        }
+
+        command = """CREATE DATABASE IF NOT EXISTS test_weather_info_db"""
+
+        result = create_weather_database(config_main, config_new, command)
+       # mock_connect.assert_called_once_with(**config_main)
+        mock_conn.cursor.assert_called_once()
+        database_name = config_new['database']
+        mock_cur.execute.assert_any_call("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s", (database_name,))
+        self.assertEqual(result, mock_conn)
+    
+    @patch('psycopg2.connect')
+    def test_create_weather_database_error(self, mock_connect):
+        mock_connect.side_effect = psycopg2.DatabaseError("Connection error")
+
+        config_main = {
+            'host': 'localhost',
+            'database': 'test_db_main',
+            'user': 'test_user_main',
+            'password': 'test_password_main',
+        }
+
+        config_new = {
+            'host': 'localhost',
+            'database': 'test_db_new',
+            'user': 'test_user_new',
+            'password': 'test_password_new',
+        }
+
+        command = """CREATE DATABASE test_weather_info_db"""
+
+        result = create_weather_database(config_main, config_new, command)
+        mock_connect.assert_called_once_with(**config_main)
+        self.assertEqual(result, None)
 
 
 

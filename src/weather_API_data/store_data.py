@@ -21,7 +21,7 @@ create_table_command = """
         date_time TIMESTAMP
     )
 """
-command_create_db = """CREATE DATABASE weather_info_db"""
+command_create_db = """CREATE DATABASE IF NOT EXISTS weather_info_db"""
 
 
 
@@ -31,7 +31,6 @@ def create_weather_database(config_main, config_new, command):
 
     try:
         conn = psycopg2.connect(**config_main)
-        conn.autocommit = True
         cur = conn.cursor()
 
         # Check if the database exists
@@ -43,7 +42,7 @@ def create_weather_database(config_main, config_new, command):
             cur.execute(command)
             print(f"Database {config_new['database']} created successfully.")
 
-        return psycopg2.connect(**config_main)
+        return psycopg2.connect(**config_new)
 
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
@@ -57,7 +56,6 @@ def create_weather_table(config, command):
 
     try:
         conn = psycopg2.connect(**config)
-        conn.autocommit = True
         cur = conn.cursor()
 
         cur.execute(command)
