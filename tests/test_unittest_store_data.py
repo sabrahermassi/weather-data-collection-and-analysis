@@ -38,13 +38,14 @@ class TestCreateDatabase(unittest.TestCase):
             'password': 'test_password_new',
         }
 
-        command = """CREATE DATABASE IF NOT EXISTS test_weather_info_db"""
+        command = """CREATE DATABASE test_weather_info_db"""
 
         result = create_weather_database(config_main, config_new, command)
-       # mock_connect.assert_called_once_with(**config_main)
+        mock_connect.assert_called_with(**config_new)
         mock_conn.cursor.assert_called_once()
         database_name = config_new['database']
         mock_cur.execute.assert_any_call("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s", (database_name,))
+        #mock_cur.execute.assert_any_call(command)
         self.assertEqual(result, mock_conn)
     
     @patch('psycopg2.connect')
@@ -91,7 +92,7 @@ class TestCreateTable(unittest.TestCase):
             'password': 'test_password',
         }
 
-        command = """CREATE IF NOT EXISTS TABLE weather_data (
+        command = """CREATE TABLE IF NOT EXISTS weather_data (
                 id SERIAL PRIMARY KEY,
                 city_name VARCHAR(255),
                 temp FLOAT,
