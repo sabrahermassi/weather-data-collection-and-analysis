@@ -3,6 +3,7 @@
 
 from datetime import datetime
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import sys
 sys.path.append('./')
 from src.weather_api_data.create_table import load_config, env_config_loading, fetch_weather_data
@@ -30,7 +31,8 @@ def create_weather_database(config_main, config_new, command):
     """ Create weather database"""
 
     try:
-        conn = psycopg2.connect(**config_main)        
+        conn = psycopg2.connect(**config_main)   
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) 
         cur = conn.cursor()
 
         # Check if the database exists
@@ -40,6 +42,7 @@ def create_weather_database(config_main, config_new, command):
         exists = cur.fetchone()
         if exists is None:
             cur.execute(command)
+            
             print(f"Database {config_new['database']} created successfully.")
 
         return psycopg2.connect(**config_new)
@@ -56,6 +59,7 @@ def create_weather_table(config, command):
 
     try:
         conn = psycopg2.connect(**config)
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
 
         cur.execute(command)
@@ -100,10 +104,8 @@ def insert_data(conn, city_name, response_dict):
 if __name__=='__main__':
     config_main_db = load_config('database.ini', 'main_database')
     config_new_db = load_config('database.ini', 'weather_info_database')
-    print(config_main_db, config_new_db)
-
     db_connection  = create_weather_database(config_main_db, config_new_db, command_create_db)
-    print('db_connection', db_connection)
+
     if db_connection is not None:
         conn = create_weather_table(config_new_db, create_table_command)
 

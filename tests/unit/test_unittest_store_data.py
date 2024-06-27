@@ -5,10 +5,11 @@ from datetime import datetime
 import psycopg2
 import sys
 import psycopg2
+from psycopg2 import extensions
 import unittest
 from unittest.mock import MagicMock, patch
 import unittest.mock
-sys.path.append('../')
+sys.path.append('./')
 from src.weather_api_data.store_data import create_weather_database, create_weather_table, insert_data 
 
 
@@ -23,6 +24,8 @@ class TestCreateDatabase(unittest.TestCase):
         mock_cur = MagicMock()
         mock_connect.return_value = mock_conn
         mock_conn.cursor.return_value = mock_cur
+        mock_conn.set_isolation_level.return_value = extensions.ISOLATION_LEVEL_AUTOCOMMIT
+
 
         config_main = {
             'host': 'localhost',
@@ -38,14 +41,15 @@ class TestCreateDatabase(unittest.TestCase):
             'password': 'test_password_new',
         }
 
-        command = """CREATE DATABASE test_weather_info_db"""
+        mock_cur.fetchone.return_value = None
+        command = """CREATE DATABASE test_db_new"""
 
         result = create_weather_database(config_main, config_new, command)
         mock_connect.assert_called_with(**config_new)
         mock_conn.cursor.assert_called_once()
         database_name = config_new['database']
         mock_cur.execute.assert_any_call("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s", (database_name,))
-        #mock_cur.execute.assert_any_call(command)
+        mock_cur.execute.assert_any_call(command)
         self.assertEqual(result, mock_conn)
     
     @patch('psycopg2.connect')
@@ -66,7 +70,7 @@ class TestCreateDatabase(unittest.TestCase):
             'password': 'test_password_new',
         }
 
-        command = """CREATE DATABASE test_weather_info_db"""
+        command = """CREATE DATABASE test_db_new"""
 
         result = create_weather_database(config_main, config_new, command)
         mock_connect.assert_called_once_with(**config_main)
