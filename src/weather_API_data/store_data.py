@@ -11,33 +11,61 @@ from src.weather_api_data.create_table import load_config, env_config_loading, f
 
 
 CITIES = ["Seoul", "pusan", "Malmö", "Stockholm", "Paris", "Taipei", "London"]
+create_table_command = """
+    CREATE TABLE IF NOT EXISTS weather_data (
+        id SERIAL PRIMARY KEY,
+        city_name VARCHAR(255),
+        temperature FLOAT,
+        pressure INT,
+        humidity INT,
+        date_time TIMESTAMP
+    )
+"""
+command_create_db = """CREATE DATABASE weather_info_db"""
 
 
 
 
-def create_weather_table(config):
-    """ Create weather_data table in the PostgreSQL database"""
-    command = """CREATE TABLE weather_data (
-                    id SERIAL PRIMARY KEY,
-                    city_name VARCHAR(255),
-                    temp FLOAT,
-                    pressure INT,
-                    humidity INT,
-                    date_time TIMESTAMP
-               )"""
-    
+def create_weather_database(config_main, config_new, command):
+    """ Create weather database"""
+
     try:
-        with psycopg2.connect(**config) as conn:
-            print("Successfully connected to the postgres server")
-            # Create a table in the database
-            with conn.cursor() as cur:
-                cur.execute("DROP TABLE  IF EXISTS weather_data")
-                cur.execute(command)
-            return conn
+        conn = psycopg2.connect(**config_main)
+        conn.autocommit = True
+        cur = conn.cursor()
+
+        # Check if the database exists
+        database_name = config_new['database']
+
+        cur.execute("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s", (database_name,))
+        exists = cur.fetchone()
+        if exists is None:
+            cur.execute(command)
+            print(f"Database {config_new['database']} created successfully.")
+
+        return psycopg2.connect(**config_main)
 
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
         return
+
+
+
+
+def create_weather_table(config, command):
+    """ Create weather_data table in the PostgreSQL database"""
+
+    try:
+        conn = psycopg2.connect(**config)
+        conn.autocommit = True
+        cur = conn.cursor()
+
+        cur.execute(command)
+        print("Table created successfully.")
+        return conn
+
+    except (psycopg2.DatabaseError, Exception) as error:
+        print(f"Error creating table: {error}")
 
 
 
@@ -72,10 +100,16 @@ def insert_data(conn, city_name, response_dict):
 
 
 if __name__=='__main__':
-    config = load_config()
-    connection = create_weather_table(config)
-    api_key, api_base_url = env_config_loading()
+    config_main_db = load_config('database.ini', 'main_database')
+    config_new_db = load_config('database.ini', 'weather_info_database')
+    print(config_main_db, config_new_db)
 
-    for city_nm in CITIES:
-        response_data = fetch_weather_data(city_nm, api_key, api_base_url)
-        insert_data(connection, city_nm, response_data)
+    db_connection  = create_weather_database(config_main_db, config_new_db, command_create_db)
+    print('db_connection', db_connection)
+    if db_connection is not None:
+        conn = create_weather_table(config_new_db, create_table_command)
+
+        api_key, api_base_url = env_config_loading()
+        for city_nm in CITIES:
+            response_data = fetch_weather_data(city_nm, api_key, api_base_url)
+            insert_data(conn, city_nm, response_data)

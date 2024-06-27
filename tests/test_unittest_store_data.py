@@ -21,9 +21,8 @@ class TestCreateTable(unittest.TestCase):
     def test_create_weather_table_success(self, mock_connect):
         mock_conn = MagicMock()
         mock_cur = MagicMock()
-
-        mock_connect.return_value.__enter__.return_value = mock_conn
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cur
+        mock_connect.return_value = mock_conn
+        mock_conn.cursor.return_value = mock_cur
 
         config = {
             'host': 'localhost',
@@ -31,11 +30,20 @@ class TestCreateTable(unittest.TestCase):
             'user': 'test_user',
             'password': 'test_password',
         }
-        result = create_weather_table(config)
+
+        command = """CREATE IF NOT EXISTS TABLE weather_data (
+                id SERIAL PRIMARY KEY,
+                city_name VARCHAR(255),
+                temp FLOAT,
+                pressure INT,
+                humidity INT,
+                date_time TIMESTAMP
+            )"""
+
+        result = create_weather_table(config, command)
 
         mock_connect.assert_called_once_with(**config)
         mock_conn.cursor.assert_called()
-        mock_cur.execute.assert_any_call("DROP TABLE  IF EXISTS weather_data")
         mock_cur.execute.assert_any_call(unittest.mock.ANY)
         self.assertEqual(result, mock_conn)
     
@@ -49,7 +57,17 @@ class TestCreateTable(unittest.TestCase):
             'user': 'test_user',
             'password': 'test_password',
         }
-        result = create_weather_table(config)
+
+        command = """CREATE TABLE IF NOT EXISTS weather_data (
+                id SERIAL PRIMARY KEY,
+                city_name VARCHAR(255),
+                temp FLOAT,
+                pressure INT,
+                humidity INT,
+                date_time TIMESTAMP
+            )"""
+
+        result = create_weather_table(config, command)
 
         mock_connect.assert_called_once_with(**config)
         self.assertEqual(result, None)

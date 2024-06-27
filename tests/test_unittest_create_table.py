@@ -18,10 +18,10 @@ class TestLoadConfig(unittest.TestCase):
 
     def test_load_config_suceess(self):
         # Create a sample database.ini file
-        with open('database.ini', 'w') as f:
+        with open('temp_database.ini', 'w') as f:
             f.write("[postgresql]\nhost=localhost\ndatabase=random_database\nuser=random_user\npassword=random_password")
 
-        config_infos = load_config('database.ini', 'postgresql')
+        config_infos = load_config('temp_database.ini', 'postgresql')
 
         self.assertEqual(config_infos['host'], 'localhost')
         self.assertEqual(config_infos['database'], 'random_database')

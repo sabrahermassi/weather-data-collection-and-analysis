@@ -8,4 +8,4 @@ myvenv/
 *.env
 
 # Ignore database config file
-database.ini
+*.ini
