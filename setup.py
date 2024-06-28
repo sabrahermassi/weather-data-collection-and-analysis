@@ -1,3 +1,5 @@
+""" A script for packaging and distributing Weather API Data project. """
+
 import setuptools
 
 with open("README.rst", 'r') as f:
@@ -6,7 +8,8 @@ with open("README.rst", 'r') as f:
 setuptools.setup(
     name='WEATHER_DATA_API',
     version='1.0.0',
-    description='An application that fetches weather data from weather API and stores it to a database',
+    description=""" An application that fetches weather data 
+                    from weather API and stores it to a database """,
     long_description=long_description,
     author='Sabra Hermassi',
     author_email='sabra.herm@gmail.com',

@@ -1,18 +1,19 @@
 """ Module providing functions that fetch weather data
     and store it in postgres database. """
 
+import sys
 from datetime import datetime
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-import sys
 sys.path.append('./')
 from src.weather_api_data.create_table import load_config, env_config_loading, fetch_weather_data
 
 
 
 
+
 CITIES = ["Seoul", "pusan", "Malmö", "Stockholm", "Paris", "Taipei", "London"]
-create_table_command = """
+CREATE_TABLE_COMMAND = """
     CREATE TABLE IF NOT EXISTS weather_data (
         id SERIAL PRIMARY KEY,
         city_name VARCHAR(255),
@@ -22,7 +23,7 @@ create_table_command = """
         date_time TIMESTAMP
     )
 """
-command_create_db = """CREATE DATABASE weather_info_db"""
+CREATE_DATABASE_COMMAND = """CREATE DATABASE weather_info_db"""
 
 
 
@@ -31,25 +32,29 @@ def create_weather_database(config_main, config_new, command):
     """ Create weather database"""
 
     try:
-        conn = psycopg2.connect(**config_main)   
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) 
+        conn = psycopg2.connect(**config_main)
+        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
 
         # Check if the database exists
         database_name = config_new['database']
 
-        cur.execute("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s", (database_name,))
+        cur.execute("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s",
+                    (database_name,))
         exists = cur.fetchone()
         if exists is None:
             cur.execute(command)
-            
             print(f"Database {config_new['database']} created successfully.")
 
         return psycopg2.connect(**config_new)
 
-    except (psycopg2.DatabaseError, Exception) as error:
-        print(error)
-        return
+    except psycopg2.DatabaseError as error:
+        print(f"Failed to create weather database : {error}")
+        return None
+
+    except Exception as error:
+        print(f"Failed to create weather database : {error}")
+        return None
 
 
 
@@ -66,8 +71,13 @@ def create_weather_table(config, command):
         print("Table created successfully.")
         return conn
 
-    except (psycopg2.DatabaseError, Exception) as error:
-        print(f"Error creating table: {error}")
+    except psycopg2.DatabaseError as error:
+        print(f"Failed to create weather table in weather database : {error}")
+        return None
+
+    except Exception as error:
+        print(f"Failed to create weather table in weather database : {error}")
+        return None
 
 
 
@@ -94,9 +104,13 @@ def insert_data(conn, city_name, response_dict):
             print(cur.rowcount, "record inserted.")
             return cur.rowcount
 
-    except (psycopg2.DatabaseError, Exception) as error:
-        print(error)
-        return
+    except psycopg2.DatabaseError as error:
+        print(f"Failed to insert data into weather database : {error}")
+        return None
+
+    except Exception as error:
+        print(f"Failed to insert data into weather database : {error}")
+        return None
 
 
 
@@ -104,12 +118,12 @@ def insert_data(conn, city_name, response_dict):
 if __name__=='__main__':
     config_main_db = load_config('database.ini', 'main_database')
     config_new_db = load_config('database.ini', 'weather_info_database')
-    db_connection  = create_weather_database(config_main_db, config_new_db, command_create_db)
+    db_connection  = create_weather_database(config_main_db, config_new_db, CREATE_DATABASE_COMMAND)
 
     if db_connection is not None:
-        conn = create_weather_table(config_new_db, create_table_command)
+        conn_tbl = create_weather_table(config_new_db, CREATE_TABLE_COMMAND)
 
         api_key, api_base_url = env_config_loading()
         for city_nm in CITIES:
             response_data = fetch_weather_data(city_nm, api_key, api_base_url)
-            insert_data(conn, city_nm, response_data)
+            insert_data(conn_tbl, city_nm, response_data)

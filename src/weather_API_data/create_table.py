@@ -2,9 +2,9 @@
     and create a weather_table in postgres database. """
 
 from configparser import ConfigParser
-from dotenv import load_dotenv
-from pathlib import Path
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 import requests
 from ratelimit import limits, sleep_and_retry
 from retrying import retry
@@ -30,8 +30,7 @@ def load_config(filename, section):
             config[param[0]] = param[1]
         return config
 
-    else:
-        raise ValueError(f"Section {section} not found in the {filename} file")
+    raise ValueError(f"Section {section} not found in the {filename} file")
 
 
 
@@ -58,6 +57,6 @@ def fetch_weather_data(city, api_key, api_base_url):
         response = requests.get(url, timeout=10)
         return response.json()
 
-    except (requests.ConnectionError , Exception) as error:
-        print(error)
-        return
+    except (requests.RequestException , Exception) as error:
+        print(f"Failed request to fetch weather data : {error}")
+        return None
