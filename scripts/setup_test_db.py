@@ -26,7 +26,7 @@ command_create_test_db = """CREATE DATABASE test_weather_db"""
 
 
 def create_test_database(config_file):
-    """ Create  test databased test_weather_db and tests table test_weather_data """
+    """ Create  test database test_weather_db and tests table test_weather_data """
 
     db_connection = None
     connection = None
