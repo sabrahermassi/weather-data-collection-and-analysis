@@ -19,8 +19,8 @@ class TestLoadConfig(unittest.TestCase):
     def test_load_config_suceess(self):
         """Test for test_load_config_suceess."""
         with open('temp_database.ini', 'w', encoding='utf-8') as f:
-            f.write(""" [postgresql]\nhost=localhost\ndatabase=random_database\
-                        nuser=random_user\npassword=random_password """)
+            f.write(""" [postgresql]\nhost=localhost\ndatabase=random_database
+                    \nuser=random_user\npassword=random_password """)
 
         config_infos = load_config('temp_database.ini', 'postgresql')
 
