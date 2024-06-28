@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - weather_api_first_branch
   pull_request:
     branches:
       - main
+      - weather_api_first_branch
 
 jobs:
   build:
