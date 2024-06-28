@@ -1,38 +1,32 @@
-name : Python CI
-
-on:
-  push:
-    branches:
-      - main
-      - weather_api_first_branch
-  pull_request:
-    branches:
-      - main
-      - weather_api_first_branch
-
-jobs:
-  build:
-    runs-on: windows-latest
-
-    steps:
-      - name: Check ou code
-        uses: actions/checkout@v2
-      
-      - name: Set up Python
-        uses: actions/setup-python
-        with:
-          python-version: '3.12.4'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      
-      - name: Run Unit tests
-        run: |
-          pytest tests/unit
-      
-      - name: Run Integration tests
-        run: |
-          pytest tests/integration
-        
+---
+  name: Python CI
+  on:
+    push:
+      branches:
+        - main
+        - weather_api_first_branch
+    pull_request:
+      branches:
+        - main
+        - weather_api_first_branch
+  jobs:
+    build:
+      runs-on: windows-latest
+      steps:
+        - name: Check ou code
+          uses: actions/checkout@v2
+        - name: Set up Python
+          uses: actions/setup-python
+          with:
+            python-version: 3.12.4
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+        - name: Run Unit tests
+          run: |
+            pytest tests/unit
+        - name: Run Integration tests
+          run: |
+            pytest tests/integration
+  
