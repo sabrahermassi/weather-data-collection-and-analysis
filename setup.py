@@ -17,13 +17,11 @@ setuptools.setup(
     packages=setuptools.find_packages('src'),
     package_dir={'':'src'},
     install_requires=[
-        'psycopg2',
-        'requests',
         'ConfigParser',
-        'retry',
-        'limits',
-        'sleep_and_retry',
-        'os',
-        'datetime'
+        'python-dotenv',
+        'requests',
+        'ratelimit',
+        'retrying',
+        'psycopg2-binary',
     ],
 )

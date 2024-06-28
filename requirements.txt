@@ -46,6 +46,8 @@ pandocfilters==1.5.1
 parso==0.8.4
 pg8000==1.31.2
 pickleshare==0.7.5
+pip-check-reqs==2.5.3
+pipdeptree==2.23.0
 pipreqs==0.5.0
 platformdirs==4.2.2
 pluggy==1.5.0
