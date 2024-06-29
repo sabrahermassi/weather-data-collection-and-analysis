@@ -56,7 +56,8 @@
 
         - name: Set up environment
           run: |
-            export PYTHONPATH=$(pwd)/weather_API_data
+            echo "Current directory: $(pwd)"
+            export PYTHONPATH=$(pwd)
             echo "PYTHONPATH set to $PYTHONPATH"
   
         - name: Verify PYTHONPATH
