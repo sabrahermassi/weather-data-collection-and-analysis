@@ -59,18 +59,16 @@
             echo "Current directory: $(pwd)"
             export PYTHONPATH=$(pwd)
             echo "PYTHONPATH set to $PYTHONPATH"
-  
-        - name: Verify PYTHONPATH
-          run: |
-            echo "PYTHONPATH: $PYTHONPATH"
 
         - name: Debug
           run: |
-            ls -la
-            ls -la src
             echo "PYTHONPATH: $PYTHONPATH"
-            cat test_database.ini
 
         - name: Run Unit tests
           run: |
+            export PYTHONPATH=$(pwd)
             pytest tests/unit
+
+        - name: Run Integration tests
+          run: |
+            pytest tests/integration
