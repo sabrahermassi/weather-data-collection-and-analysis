@@ -40,8 +40,13 @@ def create_test_database(config_file):
         if db_connection is not None:
             create_weather_table(config_new_db, CREATE_TABLE_COMMAND)
 
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
+    except psycopg2.DatabaseError as error:
+        print(f"Setup_test_db_script: Failed to connect to test_weather_database : {error}")
+        return None
+    
+    except Exception as error:
+        print(f"Setup_test_db_script: Failed to create test_weather_database : {error}")
+        return None
 
 
 

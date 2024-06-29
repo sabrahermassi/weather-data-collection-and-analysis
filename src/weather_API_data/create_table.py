@@ -20,7 +20,7 @@ ONE_MINUTE = 60
 def load_config(filename, section):
     """ Load weatherInfoDb database configuration from config file """
     parser = ConfigParser()
-    parser.read(filename)
+    parser.read(filename,  encoding='utf-8')
 
     config = {}
 

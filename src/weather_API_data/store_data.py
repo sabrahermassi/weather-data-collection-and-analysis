@@ -38,22 +38,21 @@ def create_weather_database(config_main, config_new, command):
 
         # Check if the database exists
         database_name = config_new['database']
-
         cur.execute("SELECT datname FROM pg_catalog.pg_database WHERE datname = %s",
                     (database_name,))
         exists = cur.fetchone()
         if exists is None:
             cur.execute(command)
             print(f"Database {config_new['database']} created successfully.")
-
+        
         return psycopg2.connect(**config_new)
 
     except psycopg2.DatabaseError as error:
-        print(f"Failed to create weather database : {error}")
+        print(f"Failed to connect to weather database : {error}")
         return None
 
     except Exception as error:
-        print(f"Failed to create weather database : {error}")
+        print(f"Failed to create to weather database : {error}")
         return None
 
 
