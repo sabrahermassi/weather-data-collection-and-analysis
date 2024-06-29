@@ -25,9 +25,11 @@
             POSTGRES_DB: postgres
 
 
-      steps:
-        - name: Check ou code
+      steps:      
+        - name: Check out code from local branch
           uses: actions/checkout@v2
+          with:
+            ref: refs/heads/weather_api_first_branch
 
         - name: List contents of tests/unit folder
           run: |
