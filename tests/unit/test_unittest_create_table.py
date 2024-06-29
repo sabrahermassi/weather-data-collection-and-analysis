@@ -1,15 +1,11 @@
 """ Module providing Unit Tests for load_config, and
     fetch_weather_data methods in create_table.py file. """
 
-import sys
 import unittest
 import json
 from http import HTTPStatus
 import os
 from unittest.mock import MagicMock, patch
-#sys.path.append('./')
-sys.path.append(os.path.abspath('./src'))
-
 from src.weather_api_data.create_table import load_config, fetch_weather_data
 
 

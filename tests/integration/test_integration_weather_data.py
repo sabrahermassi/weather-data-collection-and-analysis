@@ -1,11 +1,9 @@
 """ Module providing integration tests for the weather data application. """
 
 import os
-import sys
 import unittest
 import subprocess
 import psycopg2
-sys.path.append('./')
 from src.weather_api_data.create_table import load_config, env_config_loading, fetch_weather_data
 from src.weather_api_data.store_data import insert_data
 
