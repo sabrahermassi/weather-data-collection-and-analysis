@@ -3,8 +3,8 @@
 import sys
 import psycopg2
 sys.path.append('./')
-from src.weather_api_data.create_table import load_config
-from src.weather_api_data.store_data import create_weather_database, create_weather_table
+from src.weather_API_data.create_table import load_config
+from src.weather_API_data.store_data import create_weather_database, create_weather_table
 
 
 

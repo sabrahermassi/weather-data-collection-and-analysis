@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 import unittest.mock
 import psycopg2
 from psycopg2 import extensions
-from src.weather_api_data.store_data import (
+from src.weather_API_data.store_data import (
     create_weather_database,
     create_weather_table,
     insert_data

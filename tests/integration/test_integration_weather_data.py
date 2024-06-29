@@ -4,8 +4,8 @@ import os
 import unittest
 import subprocess
 import psycopg2
-from src.weather_api_data.create_table import load_config, env_config_loading, fetch_weather_data
-from src.weather_api_data.store_data import insert_data
+from src.weather_API_data.create_table import load_config, env_config_loading, fetch_weather_data
+from src.weather_API_data.store_data import insert_data
 
 
 
