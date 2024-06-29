@@ -67,7 +67,6 @@
           run: |
             ls -la
             ls -la src
-            ls -la src/weather_api_data
             echo "PYTHONPATH: $PYTHONPATH"
             cat test_database.ini
 
