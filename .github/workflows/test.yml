@@ -48,8 +48,8 @@
 
         - name: Create .env for testing
           run: |
-            echo "API_KEY = "325de9e270755c796bfe89791f69f365" > .env
-            echo "API_BASE_URL = "http://api.weatherstack.com/current" >> .env
+            echo "API_KEY = 325de9e270755c796bfe89791f69f365" > .env
+            echo "API_BASE_URL = http://api.weatherstack.com/current" >> .env
 
         - name: Set up Python
           uses: actions/setup-python@v2
@@ -64,10 +64,10 @@
         - name: Check my working Dir
           run: |
             ls -la
+            cat .env
 
         - name: Run Unit tests
           run: |
-            export PYTHONPATH=$(pwd)
             pytest tests/unit
 
         - name: Run Integration tests
