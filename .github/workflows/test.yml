@@ -31,6 +31,9 @@
 
         - name: List contents of tests/unit folder
           run: |
+            ls -la tests/unit
+            ls -la tests/integration
+            ls -la .github/workflows
             ls -la src/weather_api_data
 
         # Create the test_database.ini file dynamically
