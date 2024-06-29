@@ -51,13 +51,20 @@
 
         - name: Set up environment
           run: |
-            export PYTHONPATH=$(pwd)/src
+            export PYTHONPATH=$(pwd)
             echo "PYTHONPATH set to $PYTHONPATH"
 
         - name: Install dependencies
           run: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
+
+        - name: Debug
+          run: |
+            ls -la  # List files in current directory for verification
+            ls -la src  # List files in `src` directory for verification
+            echo "PYTHONPATH: $PYTHONPATH"  # Verify PYTHONPATH
+            cat test_database.ini  # Check contents of test_database.ini
 
         - name: Run Unit tests
           run: |
