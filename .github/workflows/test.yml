@@ -34,7 +34,7 @@
             echo "Current directory: $(pwd)"
             ls -la
             ls -la src
-            ls -la src/weather_api_data
+            ls -la src/weather_API_data
 
         # Create the test_database.ini file dynamically
         - name: Create test_database.ini for testing
