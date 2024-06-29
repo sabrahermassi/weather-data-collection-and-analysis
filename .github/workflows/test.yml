@@ -29,6 +29,10 @@
         - name: Check ou code
           uses: actions/checkout@v2
 
+        - name: List contents of tests/unit folder
+          run: |
+            ls -la tests/unit
+
         # Create the test_database.ini file dynamically
         - name: Create test_database.ini for testing
           run: |
