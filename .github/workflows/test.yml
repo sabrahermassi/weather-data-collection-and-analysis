@@ -31,6 +31,7 @@
 
         - name: List contents of tests/unit folder
           run: |
+            echo "Current directory: $(pwd)"
             ls -la
             ls -la tests/unit
             ls -la tests/integration
