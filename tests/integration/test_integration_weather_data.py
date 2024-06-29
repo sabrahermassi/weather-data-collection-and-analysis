@@ -4,6 +4,8 @@ import os
 import unittest
 import subprocess
 import psycopg2
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from src.weather_API_data.create_table import load_config, env_config_loading, fetch_weather_data
 from src.weather_API_data.store_data import insert_data
 

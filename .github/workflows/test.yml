@@ -31,13 +31,6 @@
           with:
             ref: refs/heads/weather_api_first_branch
 
-        - name: List contents of tests/unit folder
-          run: |
-            echo "Current directory: $(pwd)"
-            ls -la
-            ls -la src
-            ls -la src/weather_API_data
-
         # Create the test_database.ini file dynamically
         - name: Create test_database.ini for testing
           run: |
@@ -53,6 +46,11 @@
             echo "user=postgres" >> test_database.ini
             echo "password=Sweden@1988" >> test_database.ini
 
+        - name: Create .env for testing
+          run: |
+            echo "API_KEY = "325de9e270755c796bfe89791f69f365" > .env
+            echo "API_BASE_URL = "http://api.weatherstack.com/current" >> .env
+
         - name: Set up Python
           uses: actions/setup-python@v2
           with:
@@ -62,16 +60,10 @@
           run: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
-
-        - name: Set up environment
+        
+        - name: Check my working Dir
           run: |
-            echo "Current directory: $(pwd)"
-            export PYTHONPATH=$(pwd)
-            echo "PYTHONPATH set to $PYTHONPATH"
-
-        - name: Debug
-          run: |
-            echo "PYTHONPATH: $PYTHONPATH"
+            ls -la
 
         - name: Run Unit tests
           run: |
