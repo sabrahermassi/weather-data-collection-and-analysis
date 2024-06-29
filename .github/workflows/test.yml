@@ -29,6 +29,14 @@
         - name: Check ou code
           uses: actions/checkout@v2
 
+        - name: List contents of tests/unit folder
+          run: |
+            ls -la
+            ls -la tests/unit
+            ls -la tests/integration
+            ls -la .github/workflows
+            ls -la src/weather_api_data
+
         # Create the test_database.ini file dynamically
         - name: Create test_database.ini for testing
           run: |
@@ -63,14 +71,6 @@
         - name: Debug
           run: |
             echo "PYTHONPATH: $PYTHONPATH"
-
-        - name: List contents of tests/unit folder
-          run: |
-            ls -la
-            ls -la tests/unit
-            ls -la tests/integration
-            ls -la .github/workflows
-            ls -la src/weather_api_data
 
         - name: Run Unit tests
           run: |
