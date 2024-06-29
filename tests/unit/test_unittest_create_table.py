@@ -7,7 +7,9 @@ import json
 from http import HTTPStatus
 import os
 from unittest.mock import MagicMock, patch
-sys.path.append('./')
+#sys.path.append('./')
+sys.path.append(os.path.abspath('./src'))
+
 from src.weather_api_data.create_table import load_config, fetch_weather_data
 
 
