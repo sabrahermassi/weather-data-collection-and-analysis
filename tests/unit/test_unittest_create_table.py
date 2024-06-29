@@ -7,8 +7,8 @@ from http import HTTPStatus
 import os
 import sys
 from unittest.mock import MagicMock, patch
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
-from weather_api_data.create_table import load_config, fetch_weather_data
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from src.weather_api_data.create_table import load_config, fetch_weather_data
 
 
 
