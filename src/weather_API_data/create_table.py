@@ -37,16 +37,28 @@ def load_config(filename, section):
 
 def env_config_loading(env_path):
     """ Fetch configuration from .env file """
-    load_dotenv(dotenv_path=env_path)
-    api_key = os.getenv('API_KEY')
-    if api_key is None or api_key == '':
-        raise ValueError(f"api_key is not found in the .env file")
+    try:
+        load_dotenv(dotenv_path=env_path)
+        if not env_path.exists():
+            raise FileNotFoundError(f".env file not found")
 
-    api_base_url = os.getenv('API_BASE_URL')
-    if api_key is None or api_key == '':
-        raise ValueError(f"api_base_url is not found in the .env file")
+        api_key = os.getenv('API_KEY')
+        if api_key is None or api_key == '':
+            raise ValueError(f"api_key is not found in the .env file")
 
-    return api_key, api_base_url
+        api_base_url = os.getenv('API_BASE_URL')
+        if api_key is None or api_key == '':
+            raise ValueError(f"api_base_url is not found in the .env file")
+        
+        return api_key, api_base_url
+
+    except AttributeError as error:
+        print(f".env file not found: {error}")
+        raise
+
+    except Exception as error:
+        print(f"Unexpected error: {error}")
+        raise
 
 
 

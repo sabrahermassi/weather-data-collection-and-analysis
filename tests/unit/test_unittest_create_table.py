@@ -5,6 +5,7 @@ import unittest
 import json
 from http import HTTPStatus
 from pathlib import Path
+from dotenv import load_dotenv
 import os
 import sys
 from unittest.mock import MagicMock, patch, mock_open
@@ -106,8 +107,8 @@ class TestLoadEnvConfig(unittest.TestCase):
 
     def test_env_config_loading_inexistent_file(self):
         """Test Failure for env_config_loading: .env file is inexitent"""
-        env_path = Path('.') / '.env'
-        with self.assertRaises(ValueError):
+        env_path = Path('.') / '.nonexistentenv'
+        with self.assertRaises(FileNotFoundError):
             env_config_loading(env_path)
 
 

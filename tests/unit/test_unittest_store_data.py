@@ -133,7 +133,7 @@ class TestStoreWeatherData(unittest.TestCase):
         cls.city = "Seoul"
         cls.command = """INSERT INTO weather_data (
                         city_name, temperature, pressure, humidity, date_time)
-                        VALUES (%s, %s, %s, %s, %s);"""
+                        VALUES (%s, %s, %s, %s, %s) RETURNING id;"""
         cls.weather_data = { "current":
                                 {
                                 "temperature": 24,
@@ -152,7 +152,7 @@ class TestStoreWeatherData(unittest.TestCase):
         mock_cur = MagicMock()
         mock_conn.cursor.return_value.__enter__.return_value = mock_cur
         mock_cur.execute.return_value = None
-        mock_cur.rowcount = 1  # Simulate the rowcount
+        mock_cur.fetchone.return_value = (1,)
 
         result = insert_data(mock_conn, self.city, self.weather_data, self.command)
         mock_conn.cursor.assert_called()
@@ -162,11 +162,11 @@ class TestStoreWeatherData(unittest.TestCase):
     def test_insert_data_failure(self):
         """Test for failure case of insert_data."""
 
-        mock_conn = MagicMock()
-        mock_conn.cursor.side_effect = psycopg2.DatabaseError("Connection error")
+        self.mock_conn = MagicMock()
+        self.mock_conn.cursor.side_effect = psycopg2.DatabaseError("Connection error")
 
-        result = insert_data(mock_conn, self.city, self.weather_data, self.command)
-        self.assertEqual(result, None)
+        with self.assertRaises(psycopg2.DatabaseError):
+            insert_data(self.mock_conn, self.city, self.weather_data, self.command)
 
 
 

@@ -88,14 +88,13 @@ def insert_data(conn, city_name, response_dict, command):
     """ Inset data in the weather_data table """
 
     if 'current' not in response_dict:
-        raise ValueError(f"""Error fetching data for {city_name}:
-                             'current' key not found in response """)
-
-    temperature = response_dict['current']['temperature']
-    pressure = response_dict['current']['pressure']
-    humidity = response_dict['current']['humidity']
+        raise ValueError(f"""Error fetching data for {city_name}: 'current' key not found in response """)
 
     try:
+        temperature = response_dict['current']['temperature']
+        pressure = response_dict['current']['pressure']
+        humidity = response_dict['current']['humidity']
+
         with conn.cursor() as cur:
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
@@ -106,16 +105,19 @@ def insert_data(conn, city_name, response_dict, command):
             rows = cur.fetchone()
             if rows:
                 inserted_id = rows[0]
-            return inserted_id
+                return inserted_id
 
     except psycopg2.DatabaseError as error:
-        print(f"Failed to insert data into weather database : {error}")
-        return None
+        print(f"""Database error : {error}""")
+        raise
+
+    except KeyError as error:
+        print(f"""Error fetching data for {city_name}: {error} key not found in response """)
+        raise
 
     except Exception as error:
-        print(f"Failed to insert data into weather database : {error}")
-        return None
-
+        print(f"Failed to save data into weather database : {error}")
+        raise
 
 
 
