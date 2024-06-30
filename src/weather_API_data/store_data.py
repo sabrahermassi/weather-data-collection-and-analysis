@@ -4,6 +4,7 @@
 import sys
 from datetime import datetime
 import psycopg2
+from pathlib import Path
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 sys.path.append('./')
 from src.weather_API_data.create_table import load_config, env_config_loading, fetch_weather_data
@@ -11,7 +12,7 @@ from src.weather_API_data.create_table import load_config, env_config_loading, f
 
 
 
-
+ENV_PATH = Path('.') / '.env'
 CITIES = ["Seoul", "pusan", "Malmö", "Stockholm", "Paris", "Taipei", "London"]
 CREATE_TABLE_COMMAND = """
     CREATE TABLE IF NOT EXISTS weather_data (
@@ -24,6 +25,8 @@ CREATE_TABLE_COMMAND = """
     )
 """
 CREATE_DATABASE_COMMAND = """CREATE DATABASE weather_info_db"""
+INSERT_DATA_COMMAND = """INSERT INTO weather_data (city_name, temperature, pressure, humidity, date_time)
+                        VALUES (%s, %s, %s, %s, %s) RETURNING id;"""
 
 
 
@@ -81,10 +84,8 @@ def create_weather_table(config, command):
 
 
 
-def insert_data(conn, city_name, response_dict):
+def insert_data(conn, city_name, response_dict, command):
     """ Inset data in the weather_data table """
-    command = """INSERT INTO weather_data (city_name, temperature, pressure, humidity, date_time)
-                    VALUES (%s, %s, %s, %s, %s);"""
 
     if 'current' not in response_dict:
         raise ValueError(f"""Error fetching data for {city_name}:
@@ -101,7 +102,11 @@ def insert_data(conn, city_name, response_dict):
             val = (city_name, temperature, pressure, humidity, date_time)
             cur.execute(command, val)
             print(cur.rowcount, "record inserted.")
-            return cur.rowcount
+
+            rows = cur.fetchone()
+            if rows:
+                inserted_id = rows[0]
+            return inserted_id
 
     except psycopg2.DatabaseError as error:
         print(f"Failed to insert data into weather database : {error}")
@@ -122,7 +127,7 @@ if __name__=='__main__':
     if db_connection is not None:
         conn_tbl = create_weather_table(config_new_db, CREATE_TABLE_COMMAND)
 
-        api_key, api_base_url = env_config_loading()
+        api_key, api_base_url = env_config_loading(ENV_PATH)
         for city_nm in CITIES:
             response_data = fetch_weather_data(city_nm, api_key, api_base_url)
-            insert_data(conn_tbl, city_nm, response_data)
+            insert_data(conn_tbl, city_nm, response_data, INSERT_DATA_COMMAND)

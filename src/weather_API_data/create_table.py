@@ -20,7 +20,7 @@ ONE_MINUTE = 60
 def load_config(filename, section):
     """ Load weatherInfoDb database configuration from config file """
     parser = ConfigParser()
-    parser.read(filename,  encoding='utf-8')
+    parser.read(filename,  encoding='locale')
 
     config = {}
 
@@ -35,12 +35,17 @@ def load_config(filename, section):
 
 
 
-def env_config_loading():
+def env_config_loading(env_path):
     """ Fetch configuration from .env file """
-    env_path = Path('.') / '.env'
     load_dotenv(dotenv_path=env_path)
     api_key = os.getenv('API_KEY')
+    if api_key is None or api_key == '':
+        raise ValueError(f"api_key is not found in the .env file")
+
     api_base_url = os.getenv('API_BASE_URL')
+    if api_key is None or api_key == '':
+        raise ValueError(f"api_base_url is not found in the .env file")
+
     return api_key, api_base_url
 
 

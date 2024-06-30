@@ -9,16 +9,6 @@ from src.weather_API_data.store_data import create_weather_database, create_weat
 
 
 
-CREATE_TABLE_COMMAND = """
-    CREATE TABLE IF NOT EXISTS test_weather_data (
-        id SERIAL PRIMARY KEY,
-        city_name VARCHAR(255),
-        temperature FLOAT,
-        pressure INT,
-        humidity INT,
-        date_time TIMESTAMP
-    )
-"""
 CREATE_TEST_DB_COMMAND = """CREATE DATABASE test_weather_db"""
 
 
@@ -37,8 +27,6 @@ def create_test_database(config_file):
             config_new_db,
             CREATE_TEST_DB_COMMAND
             )
-        if db_connection is not None:
-            create_weather_table(config_new_db, CREATE_TABLE_COMMAND)
 
     except psycopg2.DatabaseError as error:
         print(f"Setup_test_db_script: Failed to connect to test_weather_database : {error}")

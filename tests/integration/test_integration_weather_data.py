@@ -5,60 +5,86 @@ import unittest
 import subprocess
 import psycopg2
 import sys
+from pathlib import Path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from src.weather_API_data.create_table import load_config, env_config_loading, fetch_weather_data
-from src.weather_API_data.store_data import insert_data
+from src.weather_API_data.store_data import insert_data, create_weather_database, create_weather_table
 
 
 
-class TestIntegration(unittest.TestCase):
-    """List of integartion tests for the weather data application."""
 
+# TODO: Add more tests for fetching
+class TestIntegrationFetchingWeatherData(unittest.TestCase):
+    """List of integartion tests for fetching seather sata ."""
     @classmethod
-    def setUpClass(self):
-        script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '../../scripts/setup_test_db.py'))
+    def setUpClass(cls):
+        """Set up the test environment."""
+        cls.env_path = Path('.') / '.env'
 
-        subprocess.run(["python", script_path])
-        self.main_db_conf = load_config('test_database.ini', 'main_database')
-        self.test_db_conf = load_config('test_database.ini', 'test_weather_database')
-        self.conn = psycopg2.connect(**self.test_db_conf)   
+    def test_fetch_weather_data_success(self):
+        """Integaration Tests for fetching weather data."""
 
-    def test_env_config_loading(self):
-        """Test for env_config_loading."""
-
-        api_key, api_base_url = env_config_loading()
-        self.assertIsNotNone(api_key)
-        self.assertIsNotNone(api_base_url)
-
-    def test_create_weather_table(self):
-        """Test for create_weather_table."""
-
-        cur = self.conn.cursor()
-        cur.execute("SELECT EXISTS (SELECT FROM pg_tables WHERE tablename = 'test_weather_data')")
-        res = cur.fetchone()
-        self.assertIsNotNone(res)
-        res1 = res[0]
-        self.assertTrue(res1)
-
-    def test_fetch_weather_data(self):
-        """Test for fetch_weather_data."""
-
-        api_key, api_base_url = env_config_loading()
+        api_key, api_base_url = env_config_loading(self.env_path)
         resp_data = fetch_weather_data("Seoul", api_key, api_base_url)
 #        self.assertIn('current', resp_data)
 #        self.assertIn('temperature', resp_data)
 #        self.assertIn('pressure', resp_data)
 #        self.assertIn('humidity', resp_data)
 
-    def test_insert_data(self):
-        """Test for insert_data."""
+    @classmethod
+    def tearDownClass(self):
+        pass
+
+
+
+
+class TestIntegrationStoreWeatherData(unittest.TestCase):
+    """List of integartion tests for storing weather data in the database."""
+
+    @classmethod
+    def setUpClass(cls):
+        """Set up the test environment."""
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '../../scripts/setup_test_db.py'))
+
+        subprocess.run(["python", script_path])
+        cls.main_db_conf = load_config('test_database.ini', 'main_database')
+        cls.test_db_conf = load_config('test_database.ini', 'test_weather_database')
+        cls.conn = psycopg2.connect(**cls.test_db_conf)
+
+    def setUp(self):
+        """Set up before each test."""
+        self.create_test_table_cmd = """
+                CREATE TABLE IF NOT EXISTS test_weather_data (
+                    id SERIAL PRIMARY KEY,
+                    city_name VARCHAR(255),
+                    temperature FLOAT,
+                    pressure INT,
+                    humidity INT,
+                    date_time TIMESTAMP
+                )
+                """
+        self.insert_data_cmd = """INSERT INTO test_weather_data (
+                        city_name, temperature, pressure, humidity, date_time)
+                        VALUES (%s, %s, %s, %s, %s) RETURNING id;"""
+
+        if self.conn is not None:
+            self.tbl_conn = create_weather_table(self.test_db_conf, self.create_test_table_cmd)
+
+    def test_insert_data_success(self):
+        """Integration test for insert_data method."""
 
         city = "Paris"
-        api_key, api_base_url = env_config_loading()
-        resp_data = fetch_weather_data(city, api_key, api_base_url)
-#        row_count = insert_data(self.conn, city, resp_data)
-#        self.assertEqual(row_count, 1)
+        weather_data = {
+            "current": {
+                "temperature": 24,
+                "pressure": 1001,
+                "humidity": 74,
+            }}
+
+        for index in range(11):
+            row_id = insert_data(self.tbl_conn, city, weather_data, self.insert_data_cmd)
+            self.assertEqual(row_id, index + 1)
 
     @classmethod
     def tearDownClass(self):
