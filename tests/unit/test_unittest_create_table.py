@@ -10,7 +10,7 @@ import os
 import sys
 from unittest.mock import MagicMock, patch, mock_open
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from src.weather_API_data.create_table import load_config, env_config_loading, fetch_weather_data
+from weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
 
 
 

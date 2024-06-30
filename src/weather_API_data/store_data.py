@@ -7,7 +7,7 @@ import psycopg2
 from pathlib import Path
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 sys.path.append('./')
-from src.weather_API_data.create_table import load_config, env_config_loading, fetch_weather_data
+from weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
 
 
 
