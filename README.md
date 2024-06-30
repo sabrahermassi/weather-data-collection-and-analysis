@@ -5,19 +5,3 @@
 ## Overview
 
 This project collects and analyzes weather data using Python, PostgreSQL, Kafka, and Pandas. It fetches real-time data from a Weather API, stores it in PostgreSQL for analysis, and uses Kafka for real-time data processing.
-
-## Installation
-
-...
-
-## Usage
-
-...
-
-## Contributing
-
-...
-
-## License
-
-...
