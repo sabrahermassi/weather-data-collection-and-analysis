@@ -7,7 +7,7 @@ import psycopg2
 from pathlib import Path
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 sys.path.append('./')
-from weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
+from src.weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
 
 
 
@@ -131,5 +131,12 @@ if __name__=='__main__':
 
         api_key, api_base_url = env_config_loading(ENV_PATH)
         for city_nm in CITIES:
-            response_data = fetch_weather_data(city_nm, api_key, api_base_url)
+            # TODO undo this comment because I only need it now
+            #response_data = fetch_weather_data(city_nm, api_key, api_base_url)
+            response_data = {
+            "current": {
+                "temperature": 24,
+                "pressure": 1001,
+                "humidity": 74,
+            }}
             insert_data(conn_tbl, city_nm, response_data, INSERT_DATA_COMMAND)
