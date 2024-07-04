@@ -3,17 +3,12 @@
 
 import unittest
 import unittest.mock
-
 from datetime import datetime
 import sys
 from unittest.mock import MagicMock, patch
 import psycopg2
 from psycopg2 import extensions
-
-
-
 sys.path.append('./')
-
 from src.weather_API_data.store_data import (
     create_weather_database,
     create_weather_table,

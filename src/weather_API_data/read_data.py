@@ -1,6 +1,7 @@
 """ Module providing functions that reads weather data from the postgres database. """
 
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 
@@ -10,7 +11,9 @@ def get_weather_data(db_conf, filters=None):
 
     try:
         with psycopg2.connect(**db_conf) as conn:
-            with conn.cursor() as cur:
+            conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+            with conn.cursor() as cur:  
                 command = "SELECT * FROM weather_data"
 
                 params = []
@@ -36,17 +39,21 @@ def get_weather_data(db_conf, filters=None):
                 else:
                     params = []
 
+                new_var = command
+                print('----------------------command-----------------------', command)
+                print('----------------------params-----------------------', params)
 
-                rows = cur.execute(command, params)
+                rows = cur.execute(new_var, params)
                 print("The number of cities: ", cur.rowcount)
-                rows = cur.fetchall()
 
+                rows = cur.fetchall()
+        
                 return rows
 
     except psycopg2.DatabaseError as error:
         print(f"Error connecting to database {error}")
-        return None
+        raise
 
     except Exception as error:
         print(f"Exception occured {error}")
-        return None
+        raise
