@@ -1,12 +1,19 @@
 """ Module providing Unit Tests for create_weather_table 
     and insert_data methods in store_data.py file. """
 
-from datetime import datetime
 import unittest
-from unittest.mock import MagicMock, patch
 import unittest.mock
+
+from datetime import datetime
+import sys
+from unittest.mock import MagicMock, patch
 import psycopg2
 from psycopg2 import extensions
+
+
+
+sys.path.append('./')
+
 from src.weather_API_data.store_data import (
     create_weather_database,
     create_weather_table,
@@ -48,7 +55,7 @@ class TestCreateDatabase(unittest.TestCase):
         mock_cur.fetchone.return_value = None
         command = """CREATE DATABASE test_db_new"""
 
-        result = create_weather_database(self.config_main, self.config_new, command)
+        result = create_weather_database(self.config_main, self.config_new,command)
         mock_connect.assert_called_with(**self.config_new)
         mock_conn.cursor.assert_called_once()
         database_name = self.config_new['database']
@@ -145,24 +152,25 @@ class TestStoreWeatherData(unittest.TestCase):
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         cls.weather_value = ("Seoul", 24, 1001, 74, date_time)
 
+    def setUp(self):
+        self.mock_conn = MagicMock()
+
     def test_insert_data_success(self):
         """Test for success case of insert_data."""
 
-        mock_conn = MagicMock()
         mock_cur = MagicMock()
-        mock_conn.cursor.return_value.__enter__.return_value = mock_cur
+        self.mock_conn.cursor.return_value.__enter__.return_value = mock_cur
         mock_cur.execute.return_value = None
         mock_cur.fetchone.return_value = (1,)
 
-        result = insert_data(mock_conn, self.city, self.weather_data, self.command)
-        mock_conn.cursor.assert_called()
+        result = insert_data(self.mock_conn, self.city, self.weather_data, self.command)
+        self.mock_conn.cursor.assert_called()
         mock_cur.execute.assert_any_call(unittest.mock.ANY, self.weather_value)
         self.assertEqual(result, 1)
 
     def test_insert_data_failure(self):
         """Test for failure case of insert_data."""
 
-        self.mock_conn = MagicMock()
         self.mock_conn.cursor.side_effect = psycopg2.DatabaseError("Connection error")
 
         with self.assertRaises(psycopg2.DatabaseError):

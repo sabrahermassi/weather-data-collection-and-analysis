@@ -1,21 +1,15 @@
 """ Module providing functions that fetch weather data
     and store it in postgres database. """
 
-import sys
 from datetime import datetime
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-sys.path.append('./')
-from src.weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
 
 
 
 
-def create_weather_database(command):
+def create_weather_database(config_main_db, config_new_db, command):
     """ Create weather database """
-
-    config_main_db = load_config('database.ini', 'main_database')
-    config_new_db = load_config('database.ini', 'weather_info_database')
 
     try:
         conn = psycopg2.connect(**config_main_db)
@@ -30,7 +24,7 @@ def create_weather_database(command):
         if exists is None:
             cur.execute(command)
             print(f"Database {config_new_db['database']} created successfully.")
-        
+
         return psycopg2.connect(**config_new_db)
 
     except psycopg2.DatabaseError as error:
@@ -44,10 +38,8 @@ def create_weather_database(command):
 
 
 
-def create_weather_table(command):
+def create_weather_table(config_new_db, command):
     """ Create weather_data table in the PostgreSQL database"""
-
-    config_new_db = load_config('database.ini', 'weather_info_database')
 
     try:
         conn = psycopg2.connect(**config_new_db)
@@ -74,7 +66,10 @@ def insert_data(conn, city_name, response_dict, command):
     """ Inset data in the weather_data table """
 
     if 'current' not in response_dict:
-        raise ValueError(f"""Error fetching data for {city_name}: 'current' key not found in response """)
+        raise ValueError(
+            f"""Error fetching data for {
+                city_name
+                }: 'current' key not found in response""")
 
     try:
         temperature = response_dict['current']['temperature']
@@ -98,7 +93,7 @@ def insert_data(conn, city_name, response_dict, command):
         raise
 
     except KeyError as error:
-        print(f"""Error fetching data for {city_name}: {error} key not found in response """)
+        print(f"""Error fetching data for {city_name}: {error} key not found in response""")
         raise
 
     except Exception as error:

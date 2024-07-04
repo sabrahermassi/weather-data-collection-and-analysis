@@ -1,16 +1,16 @@
 """ Module providing Unit Tests for load_config, and
     fetch_weather_data methods in create_table.py file. """
 
-import unittest
-import json
-from http import HTTPStatus
-from pathlib import Path
-from dotenv import load_dotenv
 import os
+from pathlib import Path
+from http import HTTPStatus
+import json
+import unittest
 import sys
+sys.path.append('./')
 from unittest.mock import MagicMock, patch, mock_open
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
+from src.weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
 
 
 
@@ -39,7 +39,7 @@ class TestLoadConfig(unittest.TestCase):
         """Test failure for load_config: Empty file"""
         with self.assertRaises(ValueError):
             load_config('empty_database.ini', 'postgresql')
-        
+
         mock_file.assert_called_with('empty_database.ini', encoding='locale')
 
     @patch('builtins.open', new_callable=mock_open, read_data="""[WrongSection]
@@ -71,8 +71,11 @@ class TestLoadEnvConfig(unittest.TestCase):
     @patch('os.getenv')
     def test_env_config_loading_success(self, mock_getenv, mock_file):
         """Test Success for env_config_loading."""
-        mock_getenv.side_effect = lambda key: {'API_KEY': 'test_key', 'API_BASE_URL': 'https://api.example.com'}.get(key)
-        
+        mock_getenv.side_effect = lambda key: {
+            'API_KEY': 'test_key',
+            'API_BASE_URL': 'https://api.example.com'
+            }.get(key)
+
         env_path = Path('.') / '.env'
         api_key, api_base_url = env_config_loading(env_path)
 

@@ -1,19 +1,26 @@
 """ Module providing integration tests for the weather data application. """
 
+import sys
 import os
 import unittest
-import subprocess
-import psycopg2
-import sys
 from pathlib import Path
+import psycopg2
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from weather_API_data.fetch_data import load_config, env_config_loading, fetch_weather_data
-from src.weather_API_data.store_data import insert_data, create_weather_database, create_weather_table
+from src.weather_API_data.fetch_data import (
+    load_config,
+    env_config_loading,
+    fetch_weather_data
+    )
+from src.weather_API_data.store_data import (
+    insert_data,
+    create_weather_database,
+    create_weather_table
+    )
 
 
 
 
-# TODO: Add more tests for fetching
+# Add more tests for fetching
 class TestIntegrationFetchingWeatherData(unittest.TestCase):
     """List of integartion tests for fetching seather sata ."""
     @classmethod
@@ -24,18 +31,18 @@ class TestIntegrationFetchingWeatherData(unittest.TestCase):
     def test_fetch_weather_data_success(self):
         """Integaration Tests for fetching weather data."""
 
-        self.api_key, self.api_base_url = env_config_loading(self.env_path)
-        self.assertIsNotNone(self.api_key)
-        self.assertIsNotNone(self.api_base_url)
-        
-        self.resp_data = fetch_weather_data("Seoul", self.api_key, self.api_base_url)
+        api_key, api_base_url = env_config_loading(self.env_path)
+        self.assertIsNotNone(api_key)
+        self.assertIsNotNone(api_base_url)
+
+        resp_data = fetch_weather_data("Seoul", api_key, api_base_url)
 #        self.assertIn('current', resp_data)
 #        self.assertIn('temperature', resp_data)
 #        self.assertIn('pressure', resp_data)
 #        self.assertIn('humidity', resp_data)
 
     @classmethod
-    def tearDownClass(self):
+    def tearDownClass(cls):
         pass
 
 
@@ -118,10 +125,14 @@ class TestIntegrationStoreWeatherData(unittest.TestCase):
 
         with self.assertRaises(ValueError) as context:
             insert_data(self.tbl_conn, self.city, wrong_weather_data, self.insert_data_cmd)
-        
+
         expected_message = "Error fetching data for Paris: 'current' key not found in response"
         actual_message = str(context.exception)
-        self.assertTrue(expected_message in actual_message, f"Expected error message not found. Actual message: {actual_message}")
+        self.assertTrue(
+            expected_message in actual_message,
+            f"Expected error message not found. Actual message: {
+                actual_message}"
+                )
 
     def test_insert_data_missing_data_in_current(self):
         """Integration test for insert_data method failure : Missing data in current."""
@@ -134,10 +145,13 @@ class TestIntegrationStoreWeatherData(unittest.TestCase):
 
         with self.assertRaises(KeyError) as context:
             insert_data(self.tbl_conn, self.city, wrong_weather_data, self.insert_data_cmd)
-        
+
         expected_message = "'temperature'"
         actual_message = str(context.exception)
-        self.assertTrue(expected_message in actual_message, f"Expected error message not found. Actual message: {actual_message}")
+        self.assertTrue(
+            expected_message in actual_message,
+            f"Expected error message not found. Actual message: {actual_message}"
+            )
 
     def test_insert_data_conn_error(self):
         """Integration test for insert_data method failure : Connection problem."""
@@ -155,12 +169,15 @@ class TestIntegrationStoreWeatherData(unittest.TestCase):
 
         expected_message = "'NoneType' object has no attribute 'cursor'"
         actual_message = str(context.exception)
-        self.assertTrue(expected_message in actual_message, f"Expected error message not found. Actual message: {actual_message}")
+        self.assertTrue(
+            expected_message in actual_message,
+            f"Expected error message not found. Actual message: {actual_message}"
+            )
 
     def test_insert_data_wrong_command(self):
         """Integration test for insert_data method failure : Wrong command."""
 
-        self.insert_data_wrong_cmd = """INSERT INTO test_wrong_weather_data (
+        insert_data_wrong_cmd = """INSERT INTO test_wrong_weather_data (
                         city_name, temperature, pressure, humidity, date_time)
                         VALUES (%s, %s, %s, %s, %s) RETURNING id;"""
         weather_data = {
@@ -171,27 +188,30 @@ class TestIntegrationStoreWeatherData(unittest.TestCase):
             }}
 
         with self.assertRaises(psycopg2.DatabaseError) as context:
-            insert_data(self.tbl_conn, self.city, weather_data, self.insert_data_wrong_cmd)
-        
+            insert_data(self.tbl_conn, self.city, weather_data, insert_data_wrong_cmd)
+
         expected_message = """relation "test_wrong_weather_data" does not exist"""
         actual_message = str(context.exception)
-        self.assertTrue(expected_message in actual_message, f"Expected error message not found. Actual message: {actual_message}")
+        self.assertTrue(
+            expected_message in actual_message,
+            f"Expected error message not found. Actual message: {actual_message}"
+            )
 
     @classmethod
-    def tearDownClass(self):
+    def tearDownClass(cls):
         db_name = 'test_weather_db'
-        if hasattr(self, 'conn') and self.conn is not None:
-            self.conn.close()
+        if hasattr(cls, 'conn') and cls.conn is not None:
+            cls.conn.close()
 
-        conn = psycopg2.connect(**self.test_db_conf)
+        conn = psycopg2.connect(**cls.test_db_conf)
         conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
         cur.execute("DROP TABLE IF EXISTS test_weather_data")
-        if hasattr(self, 'conn') and self.conn is not None:
-            self.conn.close()
+        if hasattr(cls, 'conn') and cls.conn is not None:
+            cls.conn.close()
 
         # Drop test_weather_db
-        conn = psycopg2.connect(**self.main_db_conf)
+        conn = psycopg2.connect(**cls.main_db_conf)
         conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         try:
             with conn.cursor() as cur:
@@ -207,7 +227,7 @@ class TestIntegrationStoreWeatherData(unittest.TestCase):
             print(f"Error dropping database {db_name} : {error}")
 
         finally:
-            conn.close()
+            cls.conn.close()
 
 
 

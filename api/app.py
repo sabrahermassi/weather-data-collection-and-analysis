@@ -3,14 +3,14 @@
 """
 
 import sys
-sys.path.append('./')
+from pathlib import Path
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from pathlib import Path
-from flask import Flask, request, jsonify
-from apscheduler.schedulers.background import BackgroundScheduler
+sys.path.append('./')
 from src.weather_API_data.read_data import get_weather_data
-from src.weather_API_data.fetch_data import load_config, env_config_loading
+from src.weather_API_data.fetch_data import load_config
 from src.weather_API_data.store_data import (
     create_weather_database,
     create_weather_table,
@@ -33,7 +33,8 @@ CREATE_TABLE_COMMAND = """
     )
 """
 CREATE_DATABASE_COMMAND = """CREATE DATABASE weather_info_db"""
-INSERT_DATA_COMMAND = """INSERT INTO weather_data (city_name, temperature, pressure, humidity, date_time)
+INSERT_DATA_COMMAND = """INSERT INTO weather_data
+                        (city_name, temperature, pressure, humidity, date_time)
                         VALUES (%s, %s, %s, %s, %s) RETURNING id;"""
 
 
@@ -43,7 +44,7 @@ app = Flask(__name__)
 
 def scheduled_job_fetch_store_wether_data():
     """ A background job that runs every hour to fetch
-        weather data and store it in the databse
+        weather data and store it in the database.
     """
 
     # Connect to weather_info_db
@@ -51,9 +52,9 @@ def scheduled_job_fetch_store_wether_data():
     conn_new = psycopg2.connect(**config_new_db)
     conn_new.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
-    api_key, api_base_url = env_config_loading(ENV_PATH)
+    #api_key, api_base_url = env_config_loading(ENV_PATH)
     for city_nm in CITIES:
-        # TODO undo this comment because I only need it now
+        # Undo this comment because I only need it now
         #response_data = fetch_weather_data(city_nm, api_key, api_base_url)
         response_data = {
         "current": {
@@ -66,37 +67,47 @@ def scheduled_job_fetch_store_wether_data():
 
 
 
-@app.route('/api/weather_data', methods=['GET']) #TODO this is just for testing, use <city>
+@app.route('/api/weather_data', methods=['GET'])
 def get_city_weather():
+    """ get city weather API endpoint. """
     city_name = request.args.get('city_name')
     if not city_name:
         return jsonify({"error": "city_name parameter is required"}), 400
 
+    db_conf = load_config('database.ini', 'weather_info_database')
+
     # Added this filter in case we want to expand
     # it to fetching weather for multiple cities
     city_filter = {'city_name' : [city_name]}
-
-    weather_data = get_weather_data(city_filter)
+    weather_data = get_weather_data(db_conf, city_filter)
+    print(weather_data)
 
     if weather_data:
         return jsonify(weather_data), 200
-    else:
-        return jsonify({"error": "weather data not found"}), 404
+
+    return jsonify({"error": "weather data not found"}), 404
 
 
 
 if __name__ == '__main__':
     try:
+        config_main_db = load_config('database.ini', 'main_database')
+        conf_new_db = load_config('database.ini', 'weather_info_database')
+
         #Create the weather database and the wethaer table if not exists
-        db_connection  = create_weather_database(CREATE_DATABASE_COMMAND)
+        db_connection = create_weather_database(
+            config_main_db,
+            conf_new_db,
+            CREATE_DATABASE_COMMAND
+            )
         if db_connection is not None:
-            conn_tbl = create_weather_table(CREATE_TABLE_COMMAND)
-        
+            conn_tbl = create_weather_table(conf_new_db, CREATE_TABLE_COMMAND)
+
         db_connection.close()
 
         # Trigger the scheduler that runs once every hour
         scheduler = BackgroundScheduler()
-        scheduler.add_job(func=scheduled_job_fetch_store_wether_data, trigger="interval", minutes=10)
+        scheduler.add_job(func=scheduled_job_fetch_store_wether_data, trigger="interval", seconds=5)
         scheduler.start()
 
         app.run(debug=True)

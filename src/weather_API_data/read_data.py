@@ -1,18 +1,12 @@
 """ Module providing functions that reads weather data from the postgres database. """
 
 import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-import sys
-sys.path.append('./')
-from src.weather_API_data.fetch_data import load_config
 
 
 
 
-def get_weather_data(filters=None):
+def get_weather_data(db_conf, filters=None):
     """ Retrieve data from the weather_data table """
-
-    db_conf = load_config('database.ini', 'weather_info_database')
 
     try:
         with psycopg2.connect(**db_conf) as conn:
@@ -29,19 +23,30 @@ def get_weather_data(filters=None):
 
                     if filter_clauses:
                         command += " WHERE " + " AND ".join(filter_clauses)
-                    
-                    params = [item for sublist in ([value] if not isinstance(value, list) else value for value in filters.values()) for item in sublist]
+
+                    params = [
+                        item
+                        for sublist in(
+                            [value] if not isinstance(value, list) else value
+                            for value in filters.values()
+                            )
+                            for item in sublist
+                            ]
+
                 else:
                     params = []
+
 
                 rows = cur.execute(command, params)
                 print("The number of cities: ", cur.rowcount)
                 rows = cur.fetchall()
 
                 return rows
-    
+
     except psycopg2.DatabaseError as error:
         print(f"Error connecting to database {error}")
+        return None
 
     except Exception as error:
         print(f"Exception occured {error}")
+        return None
