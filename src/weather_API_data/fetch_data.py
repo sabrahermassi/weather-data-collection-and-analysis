@@ -3,7 +3,6 @@
 
 from configparser import ConfigParser
 import os
-from pathlib import Path
 from dotenv import load_dotenv
 import requests
 from ratelimit import limits, sleep_and_retry

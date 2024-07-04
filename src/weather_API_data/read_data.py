@@ -2,7 +2,6 @@
 
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-import pandas as pd
 import sys
 sys.path.append('./')
 from src.weather_API_data.fetch_data import load_config
@@ -46,13 +45,3 @@ def get_weather_data(filters=None):
 
     except Exception as error:
         print(f"Exception occured {error}")
-
-
-
-
-if __name__ == '__main__':
-    filters = {
-        'city_name' : ['pusan', 'Paris', 'Malmö'],
-        }
-    result = get_weather_data(filters)
-    print(result)
