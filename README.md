@@ -20,37 +20,37 @@ Before you begin, ensure you have the following installed and set up on your dev
 - cd weather-data-collection-and-fetching
 
 2 - Install Python Dependencies:
-- Install project dependencies using pip, this will install all required Python packages listed in requirements.txt.
-      python -m pip install --upgrade pip
-      pip install -r requirements.txt
+Install project dependencies using pip, this will install all required Python packages listed in requirements.txt.
+- python -m pip install --upgrade pip
+- pip install -r requirements.txt
 
 ## Configuration
 
 1 - Set Up Database Configuration:
-- Create a test_database.ini file in the root directory for testing purposes:
-      - `main_database`: First section for the postgres main database running on your computer
-        - `host`: The hostname of the postgres database
-        - `port`: The port number of the postgres database
-        - `database`: The name of your main postgres database
-        - `user`: The user name of the postgres database
-        - `password`: The password created for the postgres database
-      - `test_weather_database`: Second section for the test database you created
-        - `host`: The hostname of the test database
-        - `port`: The port number of the test database
-        - `database`: The name of your test database
-        - `user`: The user name of the test database
-        - `password`: The password created for the test database
+Create a test_database.ini file in the root directory for testing purposes:
+- `main_database`: First section for the postgres main database running on your computer
+- `host`: The hostname of the postgres database
+- `port`: The port number of the postgres database
+- `database`: The name of your main postgres database
+- `user`: The user name of the postgres database
+- `password`: The password created for the postgres database
+- `test_weather_database`: Second section for the test database you created
+- `host`: The hostname of the test database
+- `port`: The port number of the test database
+- `database`: The name of your test database
+- `user`: The user name of the test database
+- `password`: The password created for the test database
 
 2 - Set Up Environment Variables:
-- Create a .env file in the root directory with the following content (Update API_KEY with your actual API key for weather data access.):
-      - `API_KEY` : your api key from the weather API of your choice
-      - `API_BASE_URL` : URL to the weather API of your choise
+Create a .env file in the root directory with the following content (Update API_KEY with your actual API key for weather data access.):
+- `API_KEY` : your api key from the weather API of your choice
+- `API_BASE_URL` : URL to the weather API of your choise
 
 ## Usage
 
-- To start the application, run:
-  python api/app.py
-- To run unit tests, use:
-  pytest tests/unit
-- To run integration tests, use:
-  pytest tests/integration
+To start the application, run:
+- python api/app.py
+To run unit tests, use:
+- pytest tests/unit
+To run integration tests, use:
+- pytest tests/integration
