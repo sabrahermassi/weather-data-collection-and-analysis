@@ -48,9 +48,9 @@ Create a .env file in the root directory with the following content (Update API_
 
 ## Usage
 
-To start the application, run:
-- python api/app.py
-To run unit tests, use:
-- pytest tests/unit
-To run integration tests, use:
-- pytest tests/integration
+- To start the application, run:
+python api/app.py
+- To run unit tests, use:
+pytest tests/unit
+- To run integration tests, use:
+pytest tests/integration
