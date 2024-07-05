@@ -12,3 +12,14 @@ Before you begin, ensure you have the following installed and set up on your dev
 - Python: Version 3.12.4 or higher.
 - PostgreSQL: Ensure you have PostgreSQL installed and running locally. You can download it from PostgreSQL Downloads.
 - `(https://www.postgresql.org/download/)` is the URL to the PostgreSQL Downloads page.
+
+## Installation
+
+1 - Clone the Repository:
+    - git clone https://github.com/sabrahermassi/weather-data-collection-and-fetching.git
+    - cd weather-data-collection-and-fetching
+
+2 - Install Python Dependencies:
+    - Install project dependencies using pip, this will install all required Python packages listed in requirements.txt.
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
