@@ -20,14 +20,14 @@ Before you begin, ensure you have the following installed and set up on your dev
 - cd weather-data-collection-and-fetching
 
 2 - Install Python Dependencies:
-    - Install project dependencies using pip, this will install all required Python packages listed in requirements.txt.
+- Install project dependencies using pip, this will install all required Python packages listed in requirements.txt.
       python -m pip install --upgrade pip
       pip install -r requirements.txt
 
 ## Configuration
 
 1 - Set Up Database Configuration:
-    - Create a test_database.ini file in the root directory for testing purposes:
+- Create a test_database.ini file in the root directory for testing purposes:
       - `main_database`: First section for the postgres main database running on your computer
         - `host`: The hostname of the postgres database
         - `port`: The port number of the postgres database
@@ -42,7 +42,7 @@ Before you begin, ensure you have the following installed and set up on your dev
         - `password`: The password created for the test database
 
 2 - Set Up Environment Variables:
-    - Create a .env file in the root directory with the following content (Update API_KEY with your actual API key for weather data access.):
+- Create a .env file in the root directory with the following content (Update API_KEY with your actual API key for weather data access.):
       - `API_KEY` : your api key from the weather API of your choice
       - `API_BASE_URL` : URL to the weather API of your choise
 
