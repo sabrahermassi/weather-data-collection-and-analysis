@@ -4,4 +4,4 @@
 
 ## Overview
 
-This project collects weather data using Python, Flask and PostgreSQL. It periodically fetches real-time data from a Weather API, stores it in PostgreSQL for analysis, and returns the weather data for a specific city.
+This project collects weather data using Python, Flask and PostgreSQL. It periodically fetches real-time data from a Weather API, stores it in PostgreSQL, and returns the weather data for a specific city.
