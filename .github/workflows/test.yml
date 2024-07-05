@@ -1,0 +1,70 @@
+---
+  name: Python CI
+  on:
+    push:
+      branches:
+        - main
+        - weather_api_first_branch
+    pull_request:
+      branches:
+        - main
+        - weather_api_first_branch
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+
+      services:
+        postgres:
+          image: 'postgres:latest'
+          ports:
+            - '5432:5432'
+          env:
+            POSTGRES_HOST: localhost
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: Sweden@1988
+            POSTGRES_DB: postgres
+
+
+      steps:      
+        - name: Check out code from local branch
+          uses: actions/checkout@v2
+          with:
+            ref: refs/heads/weather_api_first_branch
+
+        # Create the test_database.ini file dynamically
+        - name: Create test_database.ini for testing
+          run: |
+            echo "[main_database]" > test_database.ini
+            echo "host=localhost" >> test_database.ini
+            echo "port=5432" >> test_database.ini
+            echo "database=postgres" >> test_database.ini
+            echo "user=postgres" >> test_database.ini
+            echo "password=Sweden@1988" >> test_database.ini
+            echo "[test_weather_database]" >> test_database.ini
+            echo "host=localhost" >> test_database.ini
+            echo "database=test_weather_db" >> test_database.ini
+            echo "user=postgres" >> test_database.ini
+            echo "password=Sweden@1988" >> test_database.ini
+
+        - name: Create .env for testing
+          run: |
+            echo "API_KEY = 325de9e270755c796bfe89791f69f365" > .env
+            echo "API_BASE_URL = http://api.weatherstack.com/current" >> .env
+
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.12.4
+
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+        - name: Run Unit tests
+          run: |
+            pytest tests/unit
+
+        - name: Run Integration tests
+          run: |
+            pytest tests/integration

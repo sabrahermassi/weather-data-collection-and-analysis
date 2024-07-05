@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 # Ignore environment-specific settings
 myvenv/
+*.env
 
 # Ignore database config file
-database.ini
+*.ini
