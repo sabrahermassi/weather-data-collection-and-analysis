@@ -33,6 +33,7 @@ CREATE_TABLE_COMMAND = """
     )
 """
 CREATE_DATABASE_COMMAND = """CREATE DATABASE weather_info_db"""
+DELETE_OLD_DATA_COMMAND = "TRUNCATE table weather_data RESTART IDENTITY"
 INSERT_DATA_COMMAND = """INSERT INTO weather_data
                         (city_name, temperature, pressure, humidity, date_time)
                         VALUES (%s, %s, %s, %s, %s) RETURNING id;"""
@@ -50,7 +51,9 @@ def scheduled_job_fetch_store_wether_data():
     # Connect to weather_info_db
     config_new_db = load_config('database.ini', 'weather_info_database')
     conn_new = psycopg2.connect(**config_new_db)
-    conn_new.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    with conn_new.cursor() as cursor:
+        conn_new.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cursor.execute(DELETE_OLD_DATA_COMMAND)
 
     #api_key, api_base_url = env_config_loading(ENV_PATH)
     for city_nm in CITIES:
