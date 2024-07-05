@@ -21,12 +21,11 @@ class TestReadData(unittest.TestCase):
             'user': 'test_user',
             'password': 'test_password',
         }
-
         self.city_filter = {'city_name' : ['Seoul']}
-
         self.weather_data = [
             [5, "Seoul", 24.0, 1001, 74, "Thu, 04 Jul 2024 22:42:12 GMT"]
             ]
+        self.read_data_command = "SELECT * FROM weather_data"
 
     @patch('psycopg2.connect')
     def test_get_weather_data_success(self, mock_connect):
@@ -41,7 +40,7 @@ class TestReadData(unittest.TestCase):
         mock_cur.execute.return_value = None
         mock_cur.fetchall.return_value = self.weather_data
 
-        weather_data = get_weather_data(self.config, self.city_filter)
+        weather_data = get_weather_data(self.config, self.read_data_command, self.city_filter)
 
         mock_connect.assert_called_once_with(**self.config)
         mock_conn.set_isolation_level.assert_called_with(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
@@ -63,7 +62,7 @@ class TestReadData(unittest.TestCase):
         mock_cur.execute.return_value = None
         mock_cur.fetchall.return_value = None
 
-        weather_data = get_weather_data(self.config)
+        weather_data = get_weather_data(self.config, self.read_data_command)
 
         mock_connect.assert_called_once_with(**self.config)
         mock_conn.set_isolation_level.assert_called_with(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
@@ -78,7 +77,7 @@ class TestReadData(unittest.TestCase):
         mock_connect.side_effect = psycopg2.DatabaseError("Connection error")
 
         with self.assertRaises(psycopg2.DatabaseError):
-            weather_data = get_weather_data(self.config, self.city_filter)
+            weather_data = get_weather_data(self.config, self.read_data_command, self.city_filter)
             mock_connect.assert_called_once_with(**self.config)
             self.assertIsNone(weather_data)
 

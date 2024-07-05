@@ -70,6 +70,7 @@ def scheduled_job_fetch_store_wether_data():
 @app.route('/api/weather_data', methods=['GET'])
 def get_city_weather():
     """ get city weather API endpoint. """
+    command = "SELECT * FROM weather_data"
     city_name = request.args.get('city_name')
     if not city_name:
         return jsonify({"error": "city_name parameter is required"}), 400
@@ -79,7 +80,7 @@ def get_city_weather():
     # Added this filter in case we want to expand
     # it to fetching weather for multiple cities
     city_filter = {'city_name' : [city_name]}
-    weather_data = get_weather_data(db_conf, city_filter)
+    weather_data = get_weather_data(db_conf, command, city_filter)
     print(weather_data)
 
     if weather_data:

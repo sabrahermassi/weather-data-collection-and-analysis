@@ -6,7 +6,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 
-def get_weather_data(db_conf, filters=None):
+def get_weather_data(db_conf, command, filters=None):
     """ Retrieve data from the weather_data table """
 
     try:
@@ -14,8 +14,6 @@ def get_weather_data(db_conf, filters=None):
             conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
             with conn.cursor() as cur:  
-                command = "SELECT * FROM weather_data"
-
                 params = []
                 if filters:
                     filter_clauses = [
@@ -40,9 +38,6 @@ def get_weather_data(db_conf, filters=None):
                     params = []
 
                 new_var = command
-                print('----------------------command-----------------------', command)
-                print('----------------------params-----------------------', params)
-
                 rows = cur.execute(new_var, params)
                 print("The number of cities: ", cur.rowcount)
 
