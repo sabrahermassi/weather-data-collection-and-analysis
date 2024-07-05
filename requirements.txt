@@ -1,3 +1,4 @@
+APScheduler==3.10.4
 asn1crypto==1.5.1
 astroid==3.2.2
 asttokens==2.4.1
@@ -5,8 +6,10 @@ attrs==23.2.0
 backcall==0.2.0
 beautifulsoup4==4.12.3
 bleach==6.1.0
+blinker==1.8.2
 certifi==2024.6.2
 charset-normalizer==3.3.2
+Choco==1.0.5
 click==8.1.7
 colorama==0.4.6
 decorator==5.1.1
@@ -17,6 +20,7 @@ docopt==0.6.2
 executing==2.0.1
 fastjsonschema==2.20.0
 filelock==3.15.1
+Flask==3.0.3
 greenlet==3.0.3
 help2man==0.0.9
 idna==3.7
@@ -24,6 +28,7 @@ iniconfig==2.0.0
 initdb==0.5.0
 ipython==8.12.3
 isort==5.13.2
+itsdangerous==2.2.0
 jedi==0.19.1
 Jinja2==3.1.4
 jsonschema==4.22.0
@@ -41,7 +46,9 @@ mysql-connector-python==8.4.0
 nbclient==0.10.0
 nbconvert==7.16.4
 nbformat==5.10.4
+numpy==2.0.0
 packaging==24.1
+pandas==2.2.2
 pandocfilters==1.5.1
 parso==0.8.4
 pg8000==1.31.2
@@ -60,7 +67,8 @@ pytest==8.2.2
 pytest-mock==3.14.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
-pywin32==306; sys_platform == 'win32'
+pytz==2024.1
+pywin32==306; platform_system == 'Windows'
 pyzmq==26.0.3
 ratelimit==2.2.1
 referencing==0.35.1
@@ -82,8 +90,11 @@ tomlkit==0.12.5
 tornado==6.4.1
 traitlets==5.14.3
 typing_extensions==4.12.2
+tzdata==2024.1
+tzlocal==5.2
 urllib3==2.2.2
 virtualenv==20.26.2
 wcwidth==0.2.13
 webencodings==0.5.1
+Werkzeug==3.0.3
 yarg==0.1.9
