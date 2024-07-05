@@ -4,11 +4,11 @@
     push:
       branches:
         - main
-        - weather_api_first_branch
+        - weather_api_second_branch
     pull_request:
       branches:
         - main
-        - weather_api_first_branch
+        - weather_api_second_branch
   jobs:
     build:
       runs-on: ubuntu-latest
@@ -29,7 +29,7 @@
         - name: Check out code from local branch
           uses: actions/checkout@v2
           with:
-            ref: refs/heads/weather_api_first_branch
+            ref: refs/heads/weather_api_second_branch
 
         # Create the test_database.ini file dynamically
         - name: Create test_database.ini for testing
