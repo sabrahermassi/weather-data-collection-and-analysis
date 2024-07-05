@@ -16,8 +16,8 @@ Before you begin, ensure you have the following installed and set up on your dev
 ## Installation
 
 1 - Clone the Repository:
-    - git clone https://github.com/sabrahermassi/weather-data-collection-and-fetching.git
-    - cd weather-data-collection-and-fetching
+- git clone https://github.com/sabrahermassi/weather-data-collection-and-fetching.git
+- cd weather-data-collection-and-fetching
 
 2 - Install Python Dependencies:
     - Install project dependencies using pip, this will install all required Python packages listed in requirements.txt.
