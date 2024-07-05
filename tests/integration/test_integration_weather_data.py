@@ -197,6 +197,9 @@ class TestIntegrationStoreWeatherData(unittest.TestCase):
             f"Expected error message not found. Actual message: {actual_message}"
             )
 
+class TestIntegrationReadWeatherData(unittest.TestCase):
+    """List of integartion tests for reading weather data from the database."""
+
     @classmethod
     def tearDownClass(cls):
         db_name = 'test_weather_db'

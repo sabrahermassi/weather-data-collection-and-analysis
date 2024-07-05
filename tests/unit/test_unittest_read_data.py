@@ -2,9 +2,9 @@
 
 import unittest
 from unittest.mock import MagicMock, patch
+import sys
 import psycopg2
 from psycopg2 import extensions
-import sys
 sys.path.append('./')
 from src.weather_API_data.read_data import get_weather_data
 
@@ -23,7 +23,7 @@ class TestReadData(unittest.TestCase):
         }
 
         self.city_filter = {'city_name' : ['Seoul']}
-        
+
         self.weather_data = [
             [5, "Seoul", 24.0, 1001, 74, "Thu, 04 Jul 2024 22:42:12 GMT"]
             ]
